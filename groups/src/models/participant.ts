@@ -1,13 +1,13 @@
-import mongoose from 'mongoose';
-import { GroupDoc } from './group';
+import mongoose from "mongoose";
+import { GroupDoc } from "./group";
 
 interface ParticipantAttrs {
-  userId: string;
+  username: string;
   group: GroupDoc;
 }
 
-interface ParticipantDoc extends mongoose.Document {
-  userId: string;
+export interface ParticipantDoc extends mongoose.Document {
+  username: string;
   group: GroupDoc;
 }
 
@@ -17,13 +17,13 @@ interface ParticipantModel extends mongoose.Model<ParticipantDoc> {
 
 const participantSchema = new mongoose.Schema(
   {
-    userId: {
+    username: {
       type: String,
       required: true,
     },
     group: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Group',
+      ref: "Group",
     },
   },
   {
@@ -41,7 +41,7 @@ participantSchema.statics.build = (attrs: ParticipantAttrs) => {
 };
 
 const Participant = mongoose.model<ParticipantDoc, ParticipantModel>(
-  'Participant',
+  "Participant",
   participantSchema
 );
 

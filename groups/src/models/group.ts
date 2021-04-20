@@ -1,13 +1,11 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 interface GroupAttrs {
   name: string;
-  participants: string[];
 }
 
 export interface GroupDoc extends mongoose.Document {
   name: string;
-  participants: string[];
 }
 
 interface GroupModel extends mongoose.Model<GroupDoc> {
@@ -20,12 +18,6 @@ const groupSchema = new mongoose.Schema(
       type: String,
       require: false,
     },
-    participants: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Participant',
-      },
-    ],
   },
   {
     toJSON: {
@@ -41,6 +33,6 @@ groupSchema.statics.build = (attrs: GroupAttrs) => {
   return new Group(attrs);
 };
 
-const Group = mongoose.model<GroupDoc, GroupModel>('Group', groupSchema);
+const Group = mongoose.model<GroupDoc, GroupModel>("Group", groupSchema);
 
 export default Group;

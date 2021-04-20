@@ -1,9 +1,13 @@
-import { Request, Response } from 'express';
-import Participant from '../models/participant';
+import { Request, Response } from "express";
+import Participant from "../models/participant";
 
-export const indexParticipantController = (req: Request, res: Response) => {
-  const groups = Participant.find({ userId: req.currentUser!.id })
-    .populate('group')
-    .map((participant) => participant.group);
+export const indexParticipantController = async (
+  req: Request,
+  res: Response
+) => {
+  const participants = await Participant.find({
+    username: req.currentUser!.username,
+  }).populate("group");
+  const groups = participants.map((p) => p.group);
   res.send(groups);
 };
