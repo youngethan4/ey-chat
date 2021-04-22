@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+        - name: auth
+          image: youngethan4/ey-chat-auth
+          env:
+            - name: KAFKA_HOST
+              value: kafka-svc:9092
+            - name: MONGO_URI
+              value: mongodb://auth-mongo-svc:27017/auth
+            - name: JWT_KEY
+              value: jwt-test-key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-svc
+spec:
+  selector:
+    app: auth
+  ports:
+    - name: client
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

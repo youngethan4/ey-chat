@@ -6,7 +6,7 @@ interface MessageAttrs {
   payload: string;
 }
 
-interface MessageDoc extends mongoose.Document {
+export interface MessageDoc extends mongoose.Document {
   groupId: string;
   sender: string;
   payload: string;

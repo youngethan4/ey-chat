@@ -2,6 +2,9 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 
+// jest.mock('kafka-node');
+// jest.mock('../events/base-producer.ts');
+
 declare global {
   namespace NodeJS {
     interface Global {
@@ -14,6 +17,7 @@ let mongo: any;
 
 beforeAll(async () => {
   process.env.JWT_KEY = 'ahhh';
+  process.env.KAFKA_HOST = 'kafka-svc:9092';
 
   mongo = new MongoMemoryServer();
   const mongoUri = await mongo.getUri();
