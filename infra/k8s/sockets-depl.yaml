@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sockets-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sockets
+  template:
+    metadata:
+      labels:
+        app: sockets
+    spec:
+      containers:
+        - name: sockets
+          image: youngethan4/ey-chat-sockets
+          env:
+            - name: KAFKA_HOST
+              value: kafka-svc:9092
+            - name: JWT_KEY
+              value: jwt-test-key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sockets-svc
+spec:
+  selector:
+    app: sockets
+  ports:
+    - name: client
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

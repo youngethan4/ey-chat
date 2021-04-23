@@ -2,8 +2,8 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 
-// jest.mock('kafka-node');
-// jest.mock('../events/base-producer.ts');
+jest.mock('kafka-node');
+jest.mock('../events/base-producer.ts');
 
 declare global {
   namespace NodeJS {
@@ -39,7 +39,7 @@ afterAll(async () => {
 });
 
 global.signup = (setup) => {
-  //Build jwt payload {id, email}
+  //Build jwt payload {id, username}
   const payload = {
     id: setup?.userId || new mongoose.Types.ObjectId().toHexString(),
     username: setup?.username || 'test',

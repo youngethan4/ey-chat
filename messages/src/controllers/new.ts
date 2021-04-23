@@ -1,7 +1,10 @@
 import { BadRequestError } from '@ey-chat/common/build';
 import { Request, Response } from 'express';
-import BaseProducer from '../events/base-producer';
+import { Kafka } from 'kafkajs';
+import { MessageCreatedProducer } from '../events/producers/message-created-producer';
 import Message from '../models/message';
+
+const kafka = new Kafka({ brokers: [process.env.KAFKA_HOST!] });
 
 const newController = async (req: Request, res: Response) => {
   const { groupId, sender, payload } = req.body;
@@ -9,7 +12,7 @@ const newController = async (req: Request, res: Response) => {
   await message.save();
 
   try {
-    await new BaseProducer().send(message);
+    await new MessageCreatedProducer(kafka).send(message);
   } catch (err) {
     throw new BadRequestError('Server Error');
   }

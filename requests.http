@@ -1,0 +1,33 @@
+# Sign Up
+POST https://ey-chat.dev/api/users/signup
+content-type: application/json
+
+{
+  "username": "hi",
+  "password": "hihi"
+}
+
+###
+# Sign in
+POST https://ey-chat.dev/api/users/signin
+content-type: application/json
+
+{
+  "username": "hi",
+  "password": "hihi"
+}
+
+###
+# Current User
+GET https://ey-chat.dev/api/users/currentuser
+
+###
+#New Message
+POST https://ey-chat.dev/api/messages
+Content-Type: application/json
+
+{
+  "groupId": "fdsafesa",
+  "sender": "me",
+  "payload": "hello"
+}

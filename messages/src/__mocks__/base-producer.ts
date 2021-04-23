@@ -1,5 +1,3 @@
-import { MessageDoc } from '../models/message';
-
 class BaseProducer {
   send = jest.fn().mockImplementation((message, cb: () => void) => {
     cb();

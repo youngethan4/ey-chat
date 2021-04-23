@@ -1,0 +1,19 @@
+{
+  "name": "sockets",
+  "version": "1.0.0",
+  "description": "Sockets service for the ey-chat app",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node-dev --poll src/index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ey-chat/common": "^1.0.1",
+    "@types/socket.io": "^2.1.13",
+    "kafkajs": "^1.15.0",
+    "socket.io": "^4.0.1",
+    "ts-node-dev": "^1.1.6",
+    "typescipt": "^1.0.0"
+  }
+}

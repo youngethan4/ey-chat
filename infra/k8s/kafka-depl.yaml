@@ -22,6 +22,8 @@ spec:
               value: 'yes'
             - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
               value: 'true'
+            - name: KAFKA_CFG_ALLOW_AUTO_CREATE_TOPICS
+              value: 'true'
             - name: KAFKA_BROKER_ID
               value: '1'
             - name: KAFKA_LISTENERS
