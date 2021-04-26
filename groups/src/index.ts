@@ -7,6 +7,8 @@ const start = async () => {
   if (!process.env.MONGO_URI)
     throw new Error('Must include mongo uri in env vars');
   if (!process.env.JWT_KEY) throw new Error('Must include jwt key in env vars');
+  if (!process.env.KAFKA_HOST)
+    throw new Error('Must include kafka host uri in env vars');
 
   try {
     await mongoose.connect(process.env.MONGO_URI, {

@@ -1,15 +1,11 @@
 import { Kafka } from 'kafkajs';
-import { Server } from 'socket.io';
 import { MessageCreatedConsumer } from './events/consumers/message-created-consumer';
-import GroupNsp from './namespaces/groups';
-import UserNsp from './namespaces/users';
-const io = new Server();
+import io from './app';
 
 const start = async () => {
   if (!process.env.JWT_KEY) throw new Error('Must provide jwt key in env vars');
 
-  GroupNsp.instance().start(io);
-  UserNsp.instance().start(io);
+  // TODO: Create Redis caching service.
 
   const kafka = new Kafka({ brokers: [process.env.KAFKA_HOST!] });
   await new MessageCreatedConsumer(kafka).listen();
