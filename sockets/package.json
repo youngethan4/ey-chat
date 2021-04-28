@@ -4,12 +4,21 @@
   "description": "Sockets service for the ey-chat app",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node-dev --poll src/index.ts"
+    "start": "ts-node-dev --poll src/index.ts",
+    "test": "jest --watchAll --no-cache --coverage",
+    "test:ci": "jest"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": [
+      "./src/test/setup.ts"
+    ]
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@ey-chat/common": "^1.0.1",
+    "@ey-chat/common": "^1.0.2",
     "@types/jsonwebtoken": "^8.5.1",
     "@types/socket.io": "^2.1.13",
     "jsonwebtoken": "^8.5.1",
@@ -20,7 +29,9 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
+    "@types/socket.io-client": "^1.4.36",
     "jest": "^26.6.3",
+    "socket.io-client": "^4.0.1",
     "ts-jest": "^26.5.5"
   }
 }

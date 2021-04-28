@@ -2,8 +2,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 
-jest.mock('kafka-node');
-jest.mock('../events/base-producer.ts');
+jest.mock('../kafka-wrapper');
 
 declare global {
   namespace NodeJS {

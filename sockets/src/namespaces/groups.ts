@@ -1,16 +1,9 @@
-import { Namespace, Server } from 'socket.io';
+import { Namespace, Server, Socket } from 'socket.io';
+import { authenticateSocket } from '../middlewares/authenticate-socket';
 import { BaseNsp } from './base';
 
 class GroupNsp implements BaseNsp {
   private _nsp?: Namespace;
-  private static groupNsp: GroupNsp;
-
-  public static instance() {
-    if (!this.groupNsp) this.groupNsp = new GroupNsp();
-    return this.groupNsp;
-  }
-
-  private constructor() {}
 
   public get nsp() {
     if (!this._nsp)
@@ -19,14 +12,17 @@ class GroupNsp implements BaseNsp {
   }
 
   public start(io: Server) {
-    this._nsp = io.of('/groups').on('connection', (socket) => {
+    this._nsp = io.of('/sockets/groups');
+    this._nsp.use(authenticateSocket);
+    this.nsp.on('connection', (socket: Socket) => {
       console.log('connecting to nsp groups: ', socket.id);
-      socket.on('join', (groupId: string) => {
-        console.log('joining groups room: ', groupId);
-        socket.join(groupId);
+      socket.on('join', (groups: string, cb) => {
+        console.log('joining groups rooms');
+        JSON.parse(groups).forEach((g: { id: string }) => socket.join(g.id));
+        cb();
       });
     });
   }
 }
 
-export default GroupNsp;
+export const groupNsp = new GroupNsp();

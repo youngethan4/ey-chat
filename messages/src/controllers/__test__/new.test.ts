@@ -1,6 +1,6 @@
-import { KafkaClient } from 'kafka-node';
 import request from 'supertest';
 import app from '../../app';
+import { kafkaWrapper } from '../../kafka-wrapper';
 import Message from '../../models/message';
 
 const MESSAGES_ENDPOINT = '/api/messages';
@@ -49,5 +49,5 @@ it('Sends an event', async () => {
     .send({ groupId: 'fdafew', sender: 'fdsafesaf', payload: 'fdsafe' })
     .expect(201);
 
-  expect(KafkaClient).toHaveBeenCalled();
+  expect(kafkaWrapper.client.producer).toHaveBeenCalled();
 });

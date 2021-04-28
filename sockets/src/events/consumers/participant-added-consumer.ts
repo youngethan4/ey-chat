@@ -1,14 +1,10 @@
-import {
-  BaseConsumer,
-  ParticipantAddedEvent,
-  Topics,
-} from '@ey-chat/common/build';
-import UserNsp from '../../namespaces/users';
+import { BaseConsumer, ParticipantAddedEvent, Topics } from '@ey-chat/common';
+import { userNsp } from '../../namespaces/users';
 
 export class ParticipantAddedConsumer extends BaseConsumer<ParticipantAddedEvent> {
-  topic: ParticipantAddedEvent['topic'] = Topics.groupCreated; //Change to participantAdded
+  topic: ParticipantAddedEvent['topic'] = Topics.participantAdded; //Change to participantAdded
   onMessage(data: ParticipantAddedEvent['data']): void {
     const { username } = data;
-    UserNsp.instance().nsp.to(username).emit(JSON.stringify(username));
+    userNsp.nsp.to(username).emit('new-group', JSON.stringify(data));
   }
 }

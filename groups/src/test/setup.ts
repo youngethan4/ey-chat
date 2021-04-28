@@ -1,6 +1,8 @@
-import { MongoMemoryServer } from "mongodb-memory-server";
-import mongoose from "mongoose";
-import jwt from "jsonwebtoken";
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
+
+jest.mock('../kafka-wrapper');
 
 declare global {
   namespace NodeJS {
@@ -13,7 +15,7 @@ declare global {
 let mongo: any;
 
 beforeAll(async () => {
-  process.env.JWT_KEY = "ahhh";
+  process.env.JWT_KEY = 'ahhh';
 
   mongo = new MongoMemoryServer();
   const mongoUri = await mongo.getUri();
@@ -38,7 +40,7 @@ global.signup = (setup) => {
   //Build jwt payload {id, email}
   const payload = {
     id: setup?.userId || new mongoose.Types.ObjectId().toHexString(),
-    username: setup?.username || "test",
+    username: setup?.username || 'test',
   };
   //create the jwt
   const token = jwt.sign(payload, process.env.JWT_KEY!);
@@ -50,7 +52,7 @@ global.signup = (setup) => {
   const sessionJSON = JSON.stringify(session);
 
   //encode to base64
-  const base64 = Buffer.from(sessionJSON).toString("base64");
+  const base64 = Buffer.from(sessionJSON).toString('base64');
 
   //return the string
   return [`express:sess=${base64}`];

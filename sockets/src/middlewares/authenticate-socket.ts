@@ -1,14 +1,9 @@
-import { Socket } from 'socket.io';
 import { ExtendedError } from 'socket.io/dist/namespace';
 import jwt from 'jsonwebtoken';
-
-interface UserPayload {
-  id: string;
-  username: string;
-}
+import { ExtendedSocket, UserPayload } from '../extended-socket';
 
 export const authenticateSocket = (
-  socket: Socket,
+  socket: ExtendedSocket,
   next: (err?: ExtendedError | undefined) => any
 ) => {
   const { token } = socket.handshake.auth;

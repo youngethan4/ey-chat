@@ -1,16 +1,10 @@
 import { Namespace, Server } from 'socket.io';
+import { ExtendedSocket } from '../extended-socket';
+import { authenticateSocket } from '../middlewares/authenticate-socket';
 import { BaseNsp } from './base';
 
 class UserNsp implements BaseNsp {
   private _nsp?: Namespace;
-  private static userNsp: UserNsp;
-
-  public static instance() {
-    if (!this.userNsp) this.userNsp = new UserNsp();
-    return this.userNsp;
-  }
-
-  private constructor() {}
 
   public get nsp() {
     if (!this._nsp)
@@ -19,13 +13,13 @@ class UserNsp implements BaseNsp {
   }
 
   public start(io: Server) {
-    this._nsp = io.of('/users').on('connection', (socket) => {
-      socket.on('join', (username: string) => {
-        console.log('joining users room: ', username);
-        socket.join(username);
-      });
+    this._nsp = io.of('/sockets/users');
+    this._nsp.use(authenticateSocket);
+    this._nsp.on('connection', (socket: ExtendedSocket) => {
+      console.log('User connected: ', socket.data.currentUser);
+      socket.join(socket.data.currentUser!.username);
     });
   }
 }
 
-export default UserNsp;
+export const userNsp = new UserNsp();

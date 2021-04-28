@@ -1,13 +1,15 @@
 import { Server } from 'socket.io';
+import { createServer } from 'http';
 import { authenticateSocket } from './middlewares/authenticate-socket';
-import GroupNsp from './namespaces/groups';
-import UserNsp from './namespaces/users';
+import { groupNsp } from './namespaces/groups';
+import { userNsp } from './namespaces/users';
 
-const io = new Server();
+const httpServer = createServer();
+const io = new Server(httpServer);
 
 io.use(authenticateSocket);
 
-GroupNsp.instance().start(io);
-UserNsp.instance().start(io);
+groupNsp.start(io);
+userNsp.start(io);
 
-export default io;
+export default httpServer;

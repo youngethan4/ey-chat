@@ -1,14 +1,15 @@
-import { Kafka } from 'kafkajs';
 import { MessageCreatedConsumer } from './events/consumers/message-created-consumer';
 import io from './app';
+import { kafkaWrapper } from './kafka-wrapper';
 
-const start = async () => {
+(async () => {
   if (!process.env.JWT_KEY) throw new Error('Must provide jwt key in env vars');
+  if (!process.env.KAFKA_HOST)
+    throw new Error('kafka host not initialized in env vars');
 
   // TODO: Create Redis caching service.
 
-  const kafka = new Kafka({ brokers: [process.env.KAFKA_HOST!] });
-  await new MessageCreatedConsumer(kafka).listen();
+  await new MessageCreatedConsumer(kafkaWrapper.client).listen();
 
   io.listen(3000, {
     path: '/sockets',
@@ -16,6 +17,4 @@ const start = async () => {
     pingTimeout: 5000,
     cookie: true,
   });
-};
-
-start();
+})();
