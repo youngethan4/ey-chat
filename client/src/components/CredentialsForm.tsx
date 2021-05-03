@@ -1,11 +1,22 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useAppSelector } from '../redux/store/store';
 import { Text, View, StyleSheet, TextInput, Pressable } from 'react-native';
 import { useState } from 'react';
 import ErrorText from './ErrorText';
 
-const CredentialsForm = ({ onSubmit, buttonTitle, errors, didError }) => {
+export type Props = {
+  onSubmit: Function;
+  didError: boolean;
+  buttonTitle: string;
+};
+
+const CredentialsForm: React.FC<Props> = ({
+  onSubmit,
+  didError,
+  buttonTitle,
+}) => {
+  const { errors } = useAppSelector(state => state.auth);
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isUsernameFocus, setUsernameFocus] = useState(false);
@@ -32,7 +43,7 @@ const CredentialsForm = ({ onSubmit, buttonTitle, errors, didError }) => {
       {errors
         .filter(e => !e.field)
         .map((e, key) => {
-          <ErrorText error={e.value} key={key} />;
+          <ErrorText error={e.message} key={key} />;
         })}
     </View>
   );
@@ -48,7 +59,7 @@ const CredentialsForm = ({ onSubmit, buttonTitle, errors, didError }) => {
         onFocus={toggleUsernameFocus}
         onBlur={toggleUsernameFocus}
       />
-      {usernameError && <ErrorText error={usernameError.value} />}
+      {usernameError && <ErrorText error={usernameError.message} />}
       <Text style={styles.label}>Password</Text>
       <TextInput
         style={[styles.textInput, isPasswordFocus && styles.textInputOnFocus]}
@@ -57,7 +68,7 @@ const CredentialsForm = ({ onSubmit, buttonTitle, errors, didError }) => {
         onFocus={togglePasswordFocus}
         onBlur={togglePasswordFocus}
       />
-      {passwordError && <ErrorText error={passwordError} />}
+      {passwordError && <ErrorText error={passwordError.message} />}
       <Pressable onPress={forwardSubmit}>
         <Text style={styles.button}>{buttonTitle}</Text>
       </Pressable>
@@ -98,16 +109,4 @@ const styles = StyleSheet.create({
   },
 });
 
-CredentialsForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  errors: PropTypes.array.isRequired,
-  buttonTitle: PropTypes.string.isRequired,
-};
-
-const mapStateToProps = state => ({
-  errors: state.auth.errors,
-});
-
-const mapDispatchToProps = {};
-
-export default connect(mapStateToProps, mapDispatchToProps)(CredentialsForm);
+export default CredentialsForm;

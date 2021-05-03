@@ -2,7 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Text, StyleSheet } from 'react-native';
 
-const ErrorText = ({ error }) => {
+export type Props = {
+  error: string;
+};
+
+const ErrorText: React.FC<Props> = ({ error }) => {
   return <Text style={styles.error}>{error}</Text>;
 };
 

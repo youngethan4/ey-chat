@@ -11,10 +11,5 @@ import { kafkaWrapper } from './kafka-wrapper';
 
   await new MessageCreatedConsumer(kafkaWrapper.client).listen();
 
-  io.listen(3000, {
-    path: '/sockets',
-    pingInterval: 10000,
-    pingTimeout: 5000,
-    cookie: true,
-  });
+  io.listen(3000);
 })();

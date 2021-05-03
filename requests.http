@@ -1,8 +1,8 @@
 # Sign Up
-POST https://ey-chat.dev/api/users/signup
+POST http://ey-chat.dev/api/users/signup
 content-type: application/json
 
-{
+{ 
   "username": "hi",
   "password": "hihi"
 }
