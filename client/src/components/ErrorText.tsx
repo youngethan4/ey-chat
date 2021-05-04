@@ -7,14 +7,18 @@ export type Props = {
 };
 
 const ErrorText: React.FC<Props> = ({ error }) => {
-  return <Text style={styles.error}>{error}</Text>;
+  return <Text style={styles.error}> ! {error}</Text>;
 };
 
 const styles = StyleSheet.create({
   error: {
-    backgroundColor: '#f75c5c',
+    color: 'red',
+    fontSize: 15,
     borderWidth: 1,
     borderColor: 'red',
+    borderRadius: 5,
+    margin: 2,
+    padding: 3,
   },
 });
 

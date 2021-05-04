@@ -42,16 +42,22 @@ const CredentialsForm: React.FC<Props> = ({
     <View>
       {errors
         .filter(e => !e.field)
-        .map((e, key) => {
-          <ErrorText error={e.message} key={key} />;
-        })}
+        .map((e, key) => (
+          <ErrorText error={e.message} key={key} />
+        ))}
     </View>
   );
 
   return (
     <View style={styles.container}>
-      {didError && styledErrors}
+      <View style={styles.error}>{didError && styledErrors}</View>
+
       <Text style={styles.label}>Username</Text>
+      <View style={styles.fieldError}>
+        {didError && usernameError && (
+          <ErrorText error={usernameError.message} />
+        )}
+      </View>
       <TextInput
         style={[styles.textInput, isUsernameFocus && styles.textInputOnFocus]}
         onChangeText={setUsername}
@@ -59,8 +65,13 @@ const CredentialsForm: React.FC<Props> = ({
         onFocus={toggleUsernameFocus}
         onBlur={toggleUsernameFocus}
       />
-      {usernameError && <ErrorText error={usernameError.message} />}
+
       <Text style={styles.label}>Password</Text>
+      <View style={styles.fieldError}>
+        {didError && passwordError && (
+          <ErrorText error={passwordError.message} />
+        )}
+      </View>
       <TextInput
         style={[styles.textInput, isPasswordFocus && styles.textInputOnFocus]}
         onChangeText={setPassword}
@@ -68,7 +79,7 @@ const CredentialsForm: React.FC<Props> = ({
         onFocus={togglePasswordFocus}
         onBlur={togglePasswordFocus}
       />
-      {passwordError && <ErrorText error={passwordError.message} />}
+
       <Pressable onPress={forwardSubmit}>
         <Text style={styles.button}>{buttonTitle}</Text>
       </Pressable>
@@ -98,6 +109,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginStart: 10,
     marginEnd: 5,
+  },
+  fieldError: {
+    alignItems: 'flex-start',
+  },
+  error: {
+    alignItems: 'center',
+    marginBottom: 10,
   },
   button: {
     textAlign: 'center',

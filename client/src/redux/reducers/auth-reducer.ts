@@ -25,23 +25,41 @@ const initialState: AuthState = {
 const authReducer = createReducer(initialState, builder =>
   builder
     .addCase(signup.fulfilled, (state, { payload }) => {
-      return { ...state, didSignupFail: false, currentUser: payload };
+      return {
+        ...state,
+        didSignupFail: false,
+        isSignedin: true,
+        currentUser: payload,
+      };
     })
     .addCase(signup.rejected, (state, action) => {
       if (action.payload) {
-        return { ...state, didSignupFail: true, errors: action.payload.errors };
+        return {
+          ...state,
+          didSignupFail: true,
+          errors: action.payload.errors,
+        };
       }
     })
     .addCase(signin.fulfilled, (state, { payload }) => {
-      return { ...state, didSigninFail: false, currentUser: payload };
+      return {
+        ...state,
+        didSigninFail: false,
+        isSignedin: true,
+        currentUser: payload,
+      };
     })
     .addCase(signin.rejected, (state, action) => {
       if (action.payload) {
-        return { ...state, didSigninFail: true, errors: action.payload.errors };
+        return {
+          ...state,
+          didSigninFail: true,
+          errors: action.payload.errors,
+        };
       }
     })
     .addCase(currentUser.fulfilled, (state, { payload }) => {
-      return { ...state, currentUser: payload };
+      return { ...state, isSignedin: true, currentUser: payload };
     })
     .addCase(currentUser.rejected, () => {
       return initialState;

@@ -1,21 +1,35 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { View, Text } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from './RootNavigator';
+import { useNavigation } from '@react-navigation/native';
+import { useAppSelector, useAppDispatch } from '../redux/store/store';
+import { View, Text, Pressable } from 'react-native';
 import CredentailsFrom from '../components/CredentialsForm';
 import { signup } from '../redux/actions/auth-actions';
 import { styles } from './styles/auth-pages';
 
-// eslint-disable-next-line no-shadow
-const SignupPage = ({ signup, didSignupFail, isSignedin }) => {
+type SignupScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'Signup'
+>;
+
+const SignupPage = () => {
+  const navigation: SignupScreenNavigationProp = useNavigation();
+
+  const dispatch = useAppDispatch();
+  const { didSignupFail } = useAppSelector(state => state.auth);
+
   const buttonTitle = 'Sign Up';
-  const onSubmit = credentials => {
-    signup(credentials);
+  const onSubmit = (credentials: { username: string; password: string }) => {
+    dispatch(signup(credentials));
   };
 
   return (
     <View>
       <Text style={styles.title}>Sign up with ey-chat</Text>
+      <Pressable onPress={() => navigation.navigate('Signin')}>
+        <Text style={styles.link}>Existing User?</Text>
+      </Pressable>
       <View style={styles.container}>
         <CredentailsFrom
           onSubmit={onSubmit}
@@ -27,17 +41,4 @@ const SignupPage = ({ signup, didSignupFail, isSignedin }) => {
   );
 };
 
-SignupPage.propTypes = {
-  didSignupFail: PropTypes.bool.isRequired,
-  isSignedin: PropTypes.bool.isRequired,
-  signup: PropTypes.func.isRequired,
-};
-
-const mapStateToProps = state => ({
-  didSignupFail: state.auth.didSignupFail,
-  isSignedin: state.auth.isSignedin,
-});
-
-const mapDispatchToProps = { signup };
-
-export default connect(mapStateToProps, mapDispatchToProps)(SignupPage);
+export default SignupPage;

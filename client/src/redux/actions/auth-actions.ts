@@ -3,9 +3,9 @@ import axios from 'axios';
 import { CurrentUser } from '../reducers/auth-reducer';
 
 const SIGNIN_URL = 'http://10.0.2.2/api/users/signin';
-const SIGNUP_URL = 'https://10.0.2.2/api/users/signup';
-const SIGNOUT_URL = 'https://10.0.2.2/api/users/signout';
-const CURRENT_USER_URL = 'https://10.0.2.2/api/users/currentuser';
+const SIGNUP_URL = 'http://10.0.2.2/api/users/signup';
+const SIGNOUT_URL = 'http://10.0.2.2/api/users/signout';
+const CURRENT_USER_URL = 'http://10.0.2.2/api/users/currentuser';
 
 interface Errors {
   errors: [{ message: string; field?: string }];
@@ -21,11 +21,15 @@ export const signup = createAsyncThunk<
   Credentials,
   { rejectValue: Errors }
 >('users/signup', async (credentials, thunkApi) => {
-  const res = await axios.post(SIGNUP_URL, credentials);
-  if (res.status !== 200) {
-    return thunkApi.rejectWithValue(res.data);
+  try {
+    console.log('in signup action');
+    const res = await axios.post(SIGNUP_URL, credentials);
+    console.log('fulfiled');
+    return res.data;
+  } catch (err: any) {
+    console.log(err);
+    return thunkApi.rejectWithValue(err.response.data);
   }
-  return res.data;
 });
 
 export const signin = createAsyncThunk<
@@ -33,19 +37,12 @@ export const signin = createAsyncThunk<
   Credentials,
   { rejectValue: Errors }
 >('users/signin', async (credentials, thunkApi) => {
-  console.log('help');
-  let res;
   try {
-    res = await axios.post(SIGNIN_URL, credentials);
-  } catch (err) {
-    console.log(err);
-    return;
+    const res = await axios.post(SIGNIN_URL, credentials);
+    return res.data;
+  } catch (err: any) {
+    return thunkApi.rejectWithValue(err.response.data);
   }
-  console.log(res);
-  if (res.status !== 200) {
-    return thunkApi.rejectWithValue(res.data);
-  }
-  return res.data;
 });
 
 export const currentUser = createAsyncThunk('users/currentuser', async () => {

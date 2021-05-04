@@ -1,18 +1,27 @@
 import { StyleSheet } from 'react-native';
+import { pink, purple } from './colors';
 
 export const styles = StyleSheet.create({
   title: {
-    fontSize: 25,
-    color: '#8400f7',
+    fontSize: 30,
+    color: purple,
     textAlign: 'center',
-    paddingBottom: 40,
+    marginBottom: 15,
     marginTop: 40,
     marginLeft: 5,
     marginRight: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: 'lightgrey',
   },
   container: {
-    marginTop: 40,
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: 'lightgrey',
+  },
+  link: {
+    borderBottomColor: pink,
+    borderBottomWidth: 1,
+    color: pink,
+    alignSelf: 'center',
+    marginBottom: 25,
+    fontSize: 18,
   },
 });
