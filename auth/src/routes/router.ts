@@ -1,10 +1,11 @@
-import { currentUser, validateRequest } from '@ey-chat/common';
+import { currentUser, requireAuth, validateRequest } from '@ey-chat/common';
 import express from 'express';
 import { body } from 'express-validator';
 import { signupController } from '../controllers/signup';
 import { signinController } from '../controllers/signin';
 import { signoutController } from '../controllers/signout';
 import { currentUserController } from '../controllers/current-user';
+import { searchUsersController } from '../controllers/search-users';
 
 const router = express.Router();
 
@@ -37,5 +38,7 @@ router.post(
 router.post('/api/users/signout', signoutController);
 
 router.get('/api/users/currentuser', currentUser, currentUserController);
+
+router.get('/api/users', currentUser, requireAuth, searchUsersController);
 
 export default router;

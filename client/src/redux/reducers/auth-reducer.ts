@@ -1,5 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { currentUser, signin, signout, signup } from '../actions/auth-actions';
+import { RequestError } from '../actions/request-errors';
 
 export interface CurrentUser {
   id: string;
@@ -11,7 +12,7 @@ interface AuthState {
   didSigninFail: boolean;
   didSignupFail: boolean;
   isSignedin: boolean;
-  errors: [{ message: string; field?: string }] | [];
+  errors: RequestError[];
 }
 
 const initialState: AuthState = {

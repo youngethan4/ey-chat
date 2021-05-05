@@ -6,7 +6,7 @@ import { useAppSelector, useAppDispatch } from '../redux/store/store';
 import { View, Text, Pressable } from 'react-native';
 import CredentailsForm from '../components/CredentialsForm';
 import { signin } from '../redux/actions/auth-actions';
-import { styles } from './styles/auth-pages';
+import { styles } from '../styles/auth-pages';
 
 type SigninScreenNavigationProp = StackNavigationProp<
   RootStackParamList,

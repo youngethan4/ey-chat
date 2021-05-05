@@ -1,15 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { CurrentUser } from '../reducers/auth-reducer';
+import { RequestErrors } from './request-errors';
 
 const SIGNIN_URL = 'http://10.0.2.2/api/users/signin';
 const SIGNUP_URL = 'http://10.0.2.2/api/users/signup';
 const SIGNOUT_URL = 'http://10.0.2.2/api/users/signout';
 const CURRENT_USER_URL = 'http://10.0.2.2/api/users/currentuser';
-
-interface Errors {
-  errors: [{ message: string; field?: string }];
-}
 
 interface Credentials {
   username: string;
@@ -19,15 +16,12 @@ interface Credentials {
 export const signup = createAsyncThunk<
   CurrentUser,
   Credentials,
-  { rejectValue: Errors }
+  { rejectValue: RequestErrors }
 >('users/signup', async (credentials, thunkApi) => {
   try {
-    console.log('in signup action');
     const res = await axios.post(SIGNUP_URL, credentials);
-    console.log('fulfiled');
     return res.data;
   } catch (err: any) {
-    console.log(err);
     return thunkApi.rejectWithValue(err.response.data);
   }
 });
@@ -35,7 +29,7 @@ export const signup = createAsyncThunk<
 export const signin = createAsyncThunk<
   CurrentUser,
   Credentials,
-  { rejectValue: Errors }
+  { rejectValue: RequestErrors }
 >('users/signin', async (credentials, thunkApi) => {
   try {
     const res = await axios.post(SIGNIN_URL, credentials);

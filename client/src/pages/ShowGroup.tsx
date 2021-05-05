@@ -1,8 +1,8 @@
 import React from 'react';
 import { Text } from 'react-native';
 
-const Group = () => {
+const ShowGroup = () => {
   return <Text>group</Text>;
 };
 
-export default Group;
+export default ShowGroup;

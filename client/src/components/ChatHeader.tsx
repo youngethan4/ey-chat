@@ -12,9 +12,12 @@ const ChatHeader: React.FC<Props> = ({ name }) => {
   const navigation: DrawerNavigationProp<DrawerParamList> = useNavigation();
   return (
     <View style={styles.container}>
+      <Pressable style={styles.button}>
+        <Text style={styles.buttonText}>$</Text>
+      </Pressable>
       <Text style={styles.title}>{name}</Text>
       <Pressable style={styles.button} onPress={navigation.toggleDrawer}>
-        <Text>{'<>'}</Text>
+        <Text style={styles.buttonText}>#</Text>
       </Pressable>
     </View>
   );
@@ -22,17 +25,26 @@ const ChatHeader: React.FC<Props> = ({ name }) => {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 20,
-    alignSelf: 'center',
-    flex: 2,
+    fontSize: 30,
+    flex: 6,
+    textAlign: 'center',
+    overflow: 'hidden',
   },
   container: {
     display: 'flex',
     flexDirection: 'row',
+    height: 45,
+    borderBottomColor: 'lightgrey',
+    borderBottomWidth: 1,
+    paddingBottom: 5,
   },
   button: {
     flex: 1,
-    alignSelf: 'center',
+    fontSize: 30,
+  },
+  buttonText: {
+    fontSize: 30,
+    textAlign: 'center',
   },
 });
 

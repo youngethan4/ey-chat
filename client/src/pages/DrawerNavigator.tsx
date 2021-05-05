@@ -1,29 +1,41 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import Group from './Group';
-import Home from './Home';
+import ShowGroup from './ShowGroup';
 import CreateGroup from './CreateGroup';
+import { useAppSelector } from '../redux/store/store';
+import { Group } from '../redux/reducers/group-reducer';
 
 export type DrawerParamList = {
   Home: undefined;
   CreateGroup: undefined;
-  Group: { name: string };
+  Group: { group: Group };
 };
 
-const Drawer = createDrawerNavigator();
-const test = ['hi', 'hello'];
+const Drawer = createDrawerNavigator<DrawerParamList>();
 
 const DrawerNavigation = () => {
+  const { groups } = useAppSelector(state => state.groups);
+
   return (
     <Drawer.Navigator
-      initialRouteName="Home"
+      openByDefault={true}
       drawerPosition="right"
-      edgeWidth={200}
+      edgeWidth={300}
       drawerType="slide">
-      <Drawer.Screen name="Home" component={Home} />
-      <Drawer.Screen name="CreateGroup" component={CreateGroup} />
-      {test.map((s: string, key) => (
-        <Drawer.Screen name={s} component={Group} key={key} />
+      <Drawer.Screen
+        name="CreateGroup"
+        component={CreateGroup}
+        options={{
+          title: 'Create new group',
+        }}
+      />
+      {groups.map((g: Group, key) => (
+        <Drawer.Screen
+          name={g.name}
+          initialParams={{ group: g }}
+          component={ShowGroup}
+          key={key}
+        />
       ))}
     </Drawer.Navigator>
   );

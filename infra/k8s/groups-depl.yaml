@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: groups-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: groups
+  template:
+    metadata:
+      labels:
+        app: groups
+    spec:
+      containers:
+        - name: groups
+          image: youngethan4/ey-chat-groups
+          env:
+            - name: KAFKA_HOST
+              value: kafka-svc:9092
+            - name: MONGO_URI
+              value: mongodb://groups-mongo-svc:27017/groups
+            - name: JWT_KEY
+              value: jwt-test-key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: groups-svc
+spec:
+  selector:
+    app: groups
+  ports:
+    - name: client
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
