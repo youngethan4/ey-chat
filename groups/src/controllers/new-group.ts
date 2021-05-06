@@ -6,12 +6,12 @@ import Participant from '../models/participant';
 
 export const newGroupController = async (req: Request, res: Response) => {
   const { name, users } = req.body;
-
+  console.log('here');
   const group = Group.build({ name });
   await group.save();
 
   if (users) {
-    users.map(async (username: string) => {
+    users.forEach(async (username: string) => {
       const participant = Participant.build({ group, username });
       await participant.save();
 

@@ -31,8 +31,10 @@ export const indexParticipants = createAsyncThunk<
 >('participants/groups/index', async (n, thunkApi) => {
   try {
     const res = await axios.get(INDEX_PARTICIPANT_URL);
+    console.log(res.data);
     return res.data;
   } catch (err: any) {
+    console.log(err);
     return thunkApi.rejectWithValue(err.response.data);
   }
 });

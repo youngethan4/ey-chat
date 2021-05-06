@@ -1,44 +1,65 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import {
+  Pressable,
+  Text,
+  TextInput,
+  View,
+  StyleSheet,
+  TextStyle,
+} from 'react-native';
 import ChatHeader from '../components/ChatHeader';
 import { newGroup } from '../redux/actions/group-actions';
 import { useAppDispatch, useAppSelector } from '../redux/store/store';
+import { purple } from '../styles/colors';
+import { formStyles } from '../styles/form';
 
 const CreateGroup = () => {
   const dispatch = useAppDispatch();
   const username = useAppSelector(state => state.auth.currentUser!.username);
   const [name, setName] = useState('');
+  const [isNameFocused, setIsNameFocused] = useState(false);
   const [participants, setParticipants] = useState([] as string[]);
-  const [searchName, setSearchName] = useState('');
+  const [isQueryFocused, setIsQueryFocused] = useState(false);
   const [searchResult, setSearchResult] = useState([] as string[]);
 
   const onSubmit = () => {
     dispatch(newGroup({ name, participants: [username, ...participants] }));
+    setSearchResult([]);
+    setParticipants([]);
+    setName('');
   };
 
-  const search = async () => {
-    const res = await axios.get(`http://10.0.2.2/api/users?user=${searchName}`);
-    console.log(res.data);
-    setSearchResult(res.data);
+  const search = async (query: string) => {
+    if (query !== '') {
+      try {
+        const res = await axios.get(`http://10.0.2.2/api/users?user=${query}`);
+        setSearchResult(res.data);
+      } catch (err) {
+        console.error(err.response.data);
+      }
+    } else {
+      setSearchResult([]);
+    }
   };
 
-  const addedUsers = participants.map(user => (
-    <View>
-      <Text>{user}</Text>
-      <Pressable>
-        <Text>x</Text>
+  const addedUsers = participants.map((user, key) => (
+    <View key={key} style={styles.addedUserContainer}>
+      <Text style={styles.user}>{user}</Text>
+      <Pressable
+        onPress={() => setParticipants(participants.filter(u => u !== user))}>
+        <Text style={styles.addedUserRemove}>X</Text>
       </Pressable>
     </View>
   ));
 
   const searchedUsers = searchResult
     .filter(user => !participants.includes(user))
-    .map(user => (
-      <View>
-        <Text>{user}</Text>
+    .map((user, key) => (
+      <View key={key} style={styles.searchedUser}>
+        <Text style={styles.user}>{user}</Text>
         <Pressable onPress={() => setParticipants([...participants, user])}>
-          <Text>+</Text>
+          <Text style={styles.searchedUserAdd}>+</Text>
         </Pressable>
       </View>
     ));
@@ -46,19 +67,83 @@ const CreateGroup = () => {
   return (
     <View>
       <ChatHeader name="Create Group" />
-      <View>
+      <View style={formStyles.container}>
         <Pressable onPress={onSubmit}>
-          <Text>Create</Text>
+          <Text style={styles.createButton}>Create</Text>
         </Pressable>
-        <Text>Group name</Text>
-        <TextInput onChangeText={setName} />
-        <Text>Add people</Text>
+        <Text style={formStyles.label}>Group name</Text>
+        <TextInput
+          style={[
+            formStyles.textInput,
+            isNameFocused && formStyles.textInputOnFocus,
+          ]}
+          onChangeText={setName}
+          onFocus={() => setIsNameFocused(!isNameFocused)}
+          onBlur={() => setIsNameFocused(!isNameFocused)}
+        />
+        <Text style={formStyles.label}>Add people</Text>
         {addedUsers}
-        <TextInput onChangeText={setSearchName} onEndEditing={search} />
-        {searchedUsers}
+        <TextInput
+          style={[
+            formStyles.textInput,
+            isNameFocused && formStyles.textInputOnFocus,
+          ]}
+          onChangeText={search}
+          onFocus={() => setIsQueryFocused(!isQueryFocused)}
+          onBlur={() => setIsQueryFocused(!isQueryFocused)}
+        />
+        <View style={styles.searchedUserContainer}>{searchedUsers}</View>
       </View>
     </View>
   );
 };
+
+const userButton = (color: string): TextStyle => ({
+  color,
+  fontSize: 18,
+  paddingStart: 8,
+  paddingEnd: 5,
+  borderWidth: 2,
+  borderRadius: 10,
+  borderColor: color,
+  marginLeft: 5,
+  fontWeight: 'bold',
+});
+
+const styles = StyleSheet.create({
+  createButton: {
+    alignSelf: 'flex-end',
+    color: 'white',
+    backgroundColor: purple,
+    borderRadius: 10,
+    fontSize: 20,
+    padding: 7,
+    margin: 5,
+    marginEnd: 10,
+  },
+  addedUserContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+  },
+  user: {
+    fontSize: 20,
+  },
+  addedUserRemove: userButton('red'),
+  searchedUserContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    height: 500,
+    overflow: 'scroll',
+    flexDirection: 'column',
+  },
+  searchedUser: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginBottom: 5,
+  },
+  searchedUserAdd: userButton('green'),
+});
 
 export default CreateGroup;

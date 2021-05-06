@@ -3,6 +3,7 @@ import { indexParticipants, newGroup } from '../actions/group-actions';
 import { RequestError } from '../actions/request-errors';
 
 export interface Group {
+  id: string;
   name: string;
   participants?: [{ username: string }];
 }

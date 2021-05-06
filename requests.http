@@ -3,8 +3,8 @@ POST http://ey-chat.dev/api/users/signup
 content-type: application/json
 
 { 
-  "username": "hi",
-  "password": "hihi"
+  "username": "test",
+  "password": "test"
 }
 
 ###
@@ -13,8 +13,8 @@ POST https://ey-chat.dev/api/users/signin
 content-type: application/json
 
 {
-  "username": "hi",
-  "password": "hihi"
+  "username": "test",
+  "password": "test"
 }
 
 ###
@@ -31,3 +31,17 @@ Content-Type: application/json
   "sender": "me",
   "payload": "hello"
 }
+
+###
+#Create Group
+POST https://ey-chat.dev/api/groups
+Content-Type: application/json
+
+{
+  "name": "test",
+  "users": ["hi","tester"]
+}
+
+###
+#Index Participant
+GET http://localhost/api/participants/groups

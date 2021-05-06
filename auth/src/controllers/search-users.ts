@@ -1,19 +1,16 @@
 import { Request, Response } from 'express';
 import { User } from '../models/user';
 
-interface RequestQuery extends Request {
-  query: { user: string };
-}
-
-export const searchUsersController = async (
-  req: RequestQuery,
-  res: Response
-) => {
+export const searchUsersController = async (req: Request, res: Response) => {
+  const username = req.currentUser!.username;
   const { user } = req.query;
-  const users = await User.find(
-    { username: { $regex: user, $options: 'i' } },
-    'username'
-  ).limit(20);
 
-  res.send(users);
+  const users = await User.find({
+    username: {
+      $regex: new RegExp('^' + user + '\\w*', 'i'),
+      $not: new RegExp(`^${username}$`, 'i'),
+    },
+  }).limit(20);
+
+  res.send(users.map((user) => user.username));
 };
