@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { Group } from '../reducers/group-reducer';
-import { RequestErrors } from './request-errors';
+import { RequestError, RequestErrors } from './request-errors';
 
 const NEW_GROUP_URL = 'http://10.0.2.2/api/groups';
 const INDEX_PARTICIPANT_URL = 'http://10.0.2.2/api/participants/groups';
@@ -14,27 +14,27 @@ interface GroupForm {
 export const newGroup = createAsyncThunk<
   Group,
   GroupForm,
-  { rejectValue: RequestErrors }
+  { rejectValue: RequestError[] }
 >('groups/new', async (group, thunkApi) => {
   try {
     const res = await axios.post(NEW_GROUP_URL, group);
     return res.data;
   } catch (err: any) {
-    return thunkApi.rejectWithValue(err.response.data);
+    const res: RequestErrors = err.response.data;
+    return thunkApi.rejectWithValue(res.errors);
   }
 });
 
 export const indexParticipants = createAsyncThunk<
   Group[],
   void,
-  { rejectValue: RequestErrors }
+  { rejectValue: RequestError[] }
 >('participants/groups/index', async (n, thunkApi) => {
   try {
     const res = await axios.get(INDEX_PARTICIPANT_URL);
-    console.log(res.data);
     return res.data;
   } catch (err: any) {
-    console.log(err);
-    return thunkApi.rejectWithValue(err.response.data);
+    const res: RequestErrors = err.response.data;
+    return thunkApi.rejectWithValue(res.errors);
   }
 });

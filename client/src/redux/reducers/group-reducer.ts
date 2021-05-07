@@ -29,7 +29,7 @@ const groupReducer = createReducer(initialState, builder =>
     })
     .addCase(newGroup.rejected, (state, { payload }) => {
       if (payload) {
-        return { ...state, newGroupError: true, errors: payload.errors };
+        return { ...state, newGroupError: true, errors: payload };
       }
       return { ...state, newGroupError: true };
     })
@@ -42,7 +42,7 @@ const groupReducer = createReducer(initialState, builder =>
           return {
             ...state,
             indexParticipantsError: true,
-            errors: payload.errors,
+            errors: payload,
           };
         }
         return { ...state, indexParticipantsError: true };

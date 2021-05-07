@@ -1,5 +1,10 @@
 import React, { useEffect } from 'react';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import {
+  createDrawerNavigator,
+  DrawerContentComponentProps,
+  DrawerContentScrollView,
+  DrawerItemList,
+} from '@react-navigation/drawer';
 import ShowGroup from './ShowGroup';
 import CreateGroup from './CreateGroup';
 import { useAppDispatch, useAppSelector } from '../redux/store/store';
@@ -8,7 +13,6 @@ import { indexParticipants } from '../redux/actions/group-actions';
 import { StyleSheet } from 'react-native';
 
 export type DrawerParamList = {
-  Home: undefined;
   CreateGroup: undefined;
   Group: { groupId: string };
 };
@@ -24,13 +28,27 @@ const DrawerNavigation = () => {
     dispatch(indexParticipants());
   }, [dispatch]);
 
+  //Use kafka consumer to update drawer badges.
+  //Once group is selected, register socket.io-client
+
+  //Create a header within drawer with settings and createGroup button
+  const customDrawerContent = (props: DrawerContentComponentProps) => {
+    return (
+      <DrawerContentScrollView {...props}>
+        <DrawerItemList {...props} />
+      </DrawerContentScrollView>
+    );
+  };
+
   return (
     <Drawer.Navigator
-      openByDefault={true}
+      openByDefault
+      drawerContent={customDrawerContent}
       drawerPosition="right"
       edgeWidth={300}
       drawerType="slide"
-      drawerContentOptions={{ labelStyle: styles.drawerContents }}>
+      drawerContentOptions={{ labelStyle: styles.drawerContents }}
+      overlayColor="transparent">
       <Drawer.Screen
         name="CreateGroup"
         component={CreateGroup}
@@ -40,7 +58,7 @@ const DrawerNavigation = () => {
       />
       {groups.map((g: Group, key) => (
         <Drawer.Screen
-          name={g.id}
+          name={g.id} //Not sure what is best way for dynamic creation
           initialParams={{ groupId: g.id }}
           component={ShowGroup}
           key={key}
