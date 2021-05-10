@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Message } from '../redux/reducers/message-reducer';
+import { Message } from '../redux/reducers/group-reducer';
 import { useAppSelector } from '../redux/store/store';
 import { pink, purple } from '../styles/colors';
 
-const Message: React.FC<Message> = ({ createdAt, payload, sender }) => {
+const ShowMessage: React.FC<Message> = ({ createdAt, payload, sender }) => {
+  const date = new Date(createdAt);
   const [shouldShowDate, setShouldShowDate] = useState(false);
-  const showDate = (
-    <Text style={styles.text}>{createdAt.toLocaleTimeString()}</Text>
-  );
 
   const username = useAppSelector(state => state.auth.currentUser!.username);
   const isSender = username === sender ? true : false;
+
+  const toggleShouldShowDate = () => {
+    setShouldShowDate(!shouldShowDate);
+  };
 
   return (
     <View
@@ -19,8 +21,10 @@ const Message: React.FC<Message> = ({ createdAt, payload, sender }) => {
         styles.messageContainer,
         isSender ? styles.alignRight : styles.alignLeft,
       ]}>
-      <Text style={styles.text}>{sender}</Text>
-      <Pressable onPress={() => setShouldShowDate(!showDate)}>
+      <Text style={styles.text}>
+        {sender} {shouldShowDate && `- ${date.toLocaleString()}`}
+      </Text>
+      <Pressable onPress={toggleShouldShowDate}>
         <Text
           style={[
             styles.message,
@@ -29,7 +33,6 @@ const Message: React.FC<Message> = ({ createdAt, payload, sender }) => {
           {payload}
         </Text>
       </Pressable>
-      {shouldShowDate && showDate}
     </View>
   );
 };
@@ -58,8 +61,9 @@ const styles = StyleSheet.create({
   },
   notSender: {
     borderColor: purple,
+    borderWidth: 1,
     backgroundColor: 'lightgray',
   },
 });
 
-export default Message;
+export default ShowMessage;

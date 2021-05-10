@@ -27,9 +27,9 @@ POST https://ey-chat.dev/api/messages
 Content-Type: application/json
 
 {
-  "groupId": "fdsafesa",
-  "sender": "me",
-  "payload": "hello"
+  "groupId": "60995174aadec7001a4ea497",
+  "sender": "test",
+  "payload": "Hi"
 }
 
 ###
@@ -38,10 +38,14 @@ POST https://ey-chat.dev/api/groups
 Content-Type: application/json
 
 {
-  "name": "test",
-  "users": ["hi","tester"]
+  "name": "group 2",
+  "users": ["hi","test"]
 }
 
 ###
 #Index Participant
 GET http://localhost/api/participants/groups
+
+###
+#Get messages
+GET http://localhost/api/messages/60995174aadec7001a4ea497?lastCreatedAt=undefined
