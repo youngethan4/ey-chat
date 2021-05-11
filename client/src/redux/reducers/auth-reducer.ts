@@ -8,18 +8,20 @@ export interface CurrentUser {
 }
 
 interface AuthState {
-  currentUser: CurrentUser | null;
+  user: CurrentUser | null;
   didSigninFail: boolean;
   didSignupFail: boolean;
   isSignedin: boolean;
   errors: RequestError[];
+  token: string | null;
 }
 
 const initialState: AuthState = {
-  currentUser: null,
+  user: null,
   didSigninFail: false,
   didSignupFail: false,
   isSignedin: false,
+  token: null,
   errors: [],
 };
 
@@ -30,7 +32,7 @@ const authReducer = createReducer(initialState, builder =>
         ...state,
         didSignupFail: false,
         isSignedin: true,
-        currentUser: payload,
+        ...payload,
       };
     })
     .addCase(signup.rejected, (state, action) => {
@@ -47,7 +49,7 @@ const authReducer = createReducer(initialState, builder =>
         ...state,
         didSigninFail: false,
         isSignedin: true,
-        currentUser: payload,
+        ...payload,
       };
     })
     .addCase(signin.rejected, (state, action) => {

@@ -12,7 +12,6 @@ export const signupController = async (req: Request, res: Response) => {
   await user.save();
 
   const userJwt = JWT.sign(user.id, user.username);
-  req.session = { jwt: userJwt };
 
-  res.status(201).send(user);
+  res.status(201).send({ user: user, accessToken: userJwt });
 };

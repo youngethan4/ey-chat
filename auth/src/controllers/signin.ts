@@ -17,7 +17,6 @@ export const signinController = async (req: Request, res: Response) => {
   if (!passwordsMatch) throw new BadRequestError('Invalid credentials');
 
   const userJwt = JWT.sign(existingUser.id, existingUser.username);
-  req.session = { jwt: userJwt };
 
-  res.status(200).send(existingUser);
+  res.status(200).send({ user: existingUser, accessToken: userJwt });
 };
