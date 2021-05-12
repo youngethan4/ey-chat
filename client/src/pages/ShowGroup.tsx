@@ -1,6 +1,6 @@
 import { RouteProp, useRoute } from '@react-navigation/core';
-import React, { createRef } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Keyboard, NativeScrollEvent, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import ChatHeader from '../components/ChatHeader';
 import ErrorText from '../components/ErrorText';
@@ -13,6 +13,7 @@ import { DrawerParamList } from './DrawerNavigator';
 type ShowGroupScreenRouteProp = RouteProp<DrawerParamList, 'Group'>;
 
 const ShowGroup = () => {
+  const [isInitialRender, setInitialRender] = useState(true);
   const route: ShowGroupScreenRouteProp = useRoute();
   const dispatch = useAppDispatch();
 
@@ -21,8 +22,7 @@ const ShowGroup = () => {
     state.groups.groups.find(g => g.id === groupId),
   );
   const { messages, name } = group!;
-
-  const scrollViewRef = createRef<ScrollView>();
+  let scrollViewRef = useRef<ScrollView>(null);
 
   const getMessages = () => {
     if (
@@ -40,10 +40,42 @@ const ShowGroup = () => {
     }
   };
 
-  getMessages();
+  //Tomorrow: Prevent getMessages call from going too soon.
+  //Add scroll to end on message if at bottom already
+  //Add scrollTo for when old messages are loaded.
 
   const scrollToEnd = () => {
-    scrollViewRef.current!.scrollToEnd({ animated: false });
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: false });
+    }
+  };
+
+  useEffect(() => {
+    getMessages();
+    Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
+    return () => Keyboard.removeListener('keyboardDidShow', _keyboardDidShow);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const _keyboardDidShow = () => {
+    setTimeout(scrollToEnd, 1); //Seems to take 1 second for some reason...
+  };
+
+  const handleContentSizeChange = (w: number, h: number) => {
+    if (isInitialRender) {
+      scrollToEnd();
+      setInitialRender(false);
+    }
+    console.log(h);
+  };
+
+  const handleScroll = (e: { nativeEvent: NativeScrollEvent }) => {
+    const yOffset = e.nativeEvent.contentOffset.y;
+    console.log(yOffset);
+    console.log(e.nativeEvent.contentSize.height);
+    console.log(e.nativeEvent.layoutMeasurement.height);
+    if (yOffset < 500) {
+      getMessages();
+    }
   };
 
   return (
@@ -56,8 +88,9 @@ const ShowGroup = () => {
           <ScrollView
             style={styles.scrollView}
             ref={scrollViewRef}
-            onContentSizeChange={scrollToEnd}
-            onTouchStart={getMessages}>
+            onContentSizeChange={handleContentSizeChange}
+            onScrollEndDrag={handleScroll}
+            onScrollBeginDrag={handleScroll}>
             {messages.messages.map((m, index) => (
               <ShowMessage key={index} {...m} />
             ))}

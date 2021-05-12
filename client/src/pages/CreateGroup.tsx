@@ -16,7 +16,7 @@ import { formStyles } from '../styles/form';
 
 const CreateGroup = () => {
   const dispatch = useAppDispatch();
-  const username = useAppSelector(state => state.auth.currentUser!.username);
+  const username = useAppSelector(state => state.auth.user!.username);
   const [name, setName] = useState('');
   const [isNameFocused, setIsNameFocused] = useState(false);
   const [participants, setParticipants] = useState([] as string[]);

@@ -18,7 +18,7 @@ interface Credentials {
 
 interface Returned {
   user: CurrentUser;
-  token: string;
+  accessToken: string;
 }
 
 export const signup = createAsyncThunk<
@@ -29,8 +29,8 @@ export const signup = createAsyncThunk<
   try {
     const res = await axios.post(SIGNUP_URL, credentials);
     const ret: Returned = res.data;
-    await storeData(TOKEN_KEY, ret.token);
-    setAxiosAuthHeader(ret.token);
+    await storeData(TOKEN_KEY, ret.accessToken);
+    setAxiosAuthHeader(ret.accessToken);
     return ret;
   } catch (err: any) {
     return thunkApi.rejectWithValue(err.response.data);
@@ -45,8 +45,9 @@ export const signin = createAsyncThunk<
   try {
     const res = await axios.post(SIGNIN_URL, credentials);
     const ret: Returned = res.data;
-    await storeData(TOKEN_KEY, ret.token);
-    setAxiosAuthHeader(ret.token);
+    console.log(ret);
+    await storeData(TOKEN_KEY, ret.accessToken);
+    setAxiosAuthHeader(ret.accessToken);
     return ret;
   } catch (err: any) {
     return thunkApi.rejectWithValue(err.response.data);
@@ -60,7 +61,7 @@ export const currentUser = createAsyncThunk('users/currentuser', async () => {
       setAxiosAuthHeader(token);
     }
     const res = await axios.get(CURRENT_USER_URL);
-    return { user: res.data, token };
+    return { user: res.data, accessToken: token };
   } catch (err) {
     return;
   }
@@ -73,5 +74,5 @@ export const signout = createAsyncThunk('users/signout', async () => {
 });
 
 const setAxiosAuthHeader = (token: string) => {
-  axios.defaults.headers.common.Authorization = token;
+  axios.defaults.headers.common.authorization = `Bearer ${token}`;
 };

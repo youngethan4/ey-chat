@@ -8,7 +8,7 @@ const ShowMessage: React.FC<Message> = ({ createdAt, payload, sender }) => {
   const date = new Date(createdAt);
   const [shouldShowDate, setShouldShowDate] = useState(false);
 
-  const username = useAppSelector(state => state.auth.currentUser!.username);
+  const username = useAppSelector(state => state.auth.user!.username);
   const isSender = username === sender ? true : false;
 
   const toggleShouldShowDate = () => {
@@ -21,9 +21,12 @@ const ShowMessage: React.FC<Message> = ({ createdAt, payload, sender }) => {
         styles.messageContainer,
         isSender ? styles.alignRight : styles.alignLeft,
       ]}>
-      <Text style={styles.text}>
-        {sender} {shouldShowDate && `- ${date.toLocaleString()}`}
-      </Text>
+      {(!isSender || shouldShowDate) && (
+        <Text style={styles.text}>
+          {!isSender && sender} {!isSender && shouldShowDate && '-'}{' '}
+          {shouldShowDate && date.toLocaleString()}
+        </Text>
+      )}
       <Pressable onPress={toggleShouldShowDate}>
         <Text
           style={[

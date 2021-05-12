@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { newMessage } from '../redux/actions/message-actions';
+import { useAppDispatch, useAppSelector } from '../redux/store/store';
 import { pink, purple } from '../styles/colors';
 
 type Props = {
@@ -9,6 +11,8 @@ type Props = {
 const WriteMessage: React.FC<Props> = ({ groupId }) => {
   const [message, setMessage] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+  const dispatch = useAppDispatch();
+  const username = useAppSelector(state => state.auth.user!.username);
 
   const toggleFocus = () => {
     setIsFocused(!isFocused);
@@ -16,6 +20,7 @@ const WriteMessage: React.FC<Props> = ({ groupId }) => {
 
   const sendMessage = () => {
     console.log('sending... ', groupId);
+    dispatch(newMessage({ groupId, payload: message, sender: username }));
     setMessage('');
   };
 
@@ -38,9 +43,11 @@ const WriteMessage: React.FC<Props> = ({ groupId }) => {
 
 const styles = StyleSheet.create({
   container: {
+    borderTopColor: 'lightgray',
+    borderTopWidth: 1,
     display: 'flex',
     flexDirection: 'row',
-    margin: 5,
+    padding: 5,
   },
   sendButton: {
     flex: 1,

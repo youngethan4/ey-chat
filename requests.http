@@ -25,20 +25,22 @@ GET https://ey-chat.dev/api/users/currentuser
 #New Message
 POST https://ey-chat.dev/api/messages
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOWMwNTJhMzQ1NjhiMDAxYThlOTYzMCIsInVzZXJuYW1lIjoidGVzdCIsImlhdCI6MTYyMDgzNzY3NX0.yOxzdypj1p-5CC6iR8zpT25CAakburZnUfgMaIgt7F0
 
 {
-  "groupId": "60995174aadec7001a4ea497",
+  "groupId": "609c056b009bb600199f6a57",
   "sender": "test",
-  "payload": "Hi"
+  "payload": "How are you?"
 }
 
 ###
 #Create Group
 POST https://ey-chat.dev/api/groups
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOWMwNTJhMzQ1NjhiMDAxYThlOTYzMCIsInVzZXJuYW1lIjoidGVzdCIsImlhdCI6MTYyMDgzNzY3NX0.yOxzdypj1p-5CC6iR8zpT25CAakburZnUfgMaIgt7F0
 
 {
-  "name": "group 2",
+  "name": "group 1",
   "users": ["hi","test"]
 }
 

@@ -1,13 +1,17 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { indexParticipants, newGroup } from '../actions/group-actions';
+import { newMessage } from '../actions/message-actions';
 import { getGroupMessages } from '../actions/message-actions';
 import { RequestError } from '../actions/request-errors';
 
 export interface Message {
+  id: string;
   groupId: string;
   sender: string;
   payload: string;
   createdAt: string;
+  errors?: RequestError[];
+  status?: 'error' | 'sent' | 'delivered';
 }
 
 interface MessageState {
@@ -100,6 +104,31 @@ const groupReducer = createReducer(initialState, builder =>
       let group = state.groups.find(g => g.id === payload?.groupId);
       if (payload && group) {
         group.messages.getMessagesFailed = true;
+        state.groups.map(g => {
+          if (g.id === payload.groupId && group) {
+            return group;
+          }
+          return g;
+        });
+        return state;
+      }
+      return state;
+    })
+    .addCase(newMessage.fulfilled, (state, { payload }) => {
+      let group = state.groups.find(g => g.id === payload.groupId);
+      group!.messages.messages.push(payload);
+      state.groups.map(g => {
+        if (g.id === payload.groupId && group) {
+          return group;
+        }
+        return g;
+      });
+      return state;
+    })
+    .addCase(newMessage.rejected, (state, { payload }) => {
+      if (payload) {
+        let group = state.groups.find(g => g.id === payload.groupId);
+        group!.messages.messages.push(payload);
         state.groups.map(g => {
           if (g.id === payload.groupId && group) {
             return group;

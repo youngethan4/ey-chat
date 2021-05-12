@@ -13,7 +13,7 @@ interface AuthState {
   didSignupFail: boolean;
   isSignedin: boolean;
   errors: RequestError[];
-  token: string | null;
+  accessToken: string | null;
 }
 
 const initialState: AuthState = {
@@ -21,7 +21,7 @@ const initialState: AuthState = {
   didSigninFail: false,
   didSignupFail: false,
   isSignedin: false,
-  token: null,
+  accessToken: null,
   errors: [],
 };
 
