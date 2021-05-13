@@ -9,6 +9,8 @@ import {
   TextStyle,
 } from 'react-native';
 import ChatHeader from '../components/ChatHeader';
+import ErrorText from '../components/ErrorText';
+import { useStyledErrors } from '../hooks/styles';
 import { newGroup } from '../redux/actions/group-actions';
 import { useAppDispatch, useAppSelector } from '../redux/store/store';
 import { purple } from '../styles/colors';
@@ -17,6 +19,7 @@ import { formStyles } from '../styles/form';
 const CreateGroup = () => {
   const dispatch = useAppDispatch();
   const username = useAppSelector(state => state.auth.user!.username);
+  const { errors, newGroupError } = useAppSelector(state => state.groups);
   const [name, setName] = useState('');
   const [isNameFocused, setIsNameFocused] = useState(false);
   const [participants, setParticipants] = useState([] as string[]);
@@ -42,6 +45,9 @@ const CreateGroup = () => {
       setSearchResult([]);
     }
   };
+
+  const groupNameError = errors.find(e => e.field === 'name');
+  const styledErrors = useStyledErrors(errors);
 
   const addedUsers = participants.map((user, key) => (
     <View key={key} style={styles.addedUserContainer}>
@@ -71,6 +77,13 @@ const CreateGroup = () => {
         <Pressable onPress={onSubmit}>
           <Text style={styles.createButton}>Create</Text>
         </Pressable>
+        <View style={formStyles.error}>{newGroupError && styledErrors}</View>
+
+        <View style={formStyles.fieldError}>
+          {groupNameError && newGroupError && (
+            <ErrorText error={groupNameError.message} />
+          )}
+        </View>
         <Text style={formStyles.label}>Group name</Text>
         <TextInput
           style={[
@@ -81,6 +94,7 @@ const CreateGroup = () => {
           onFocus={() => setIsNameFocused(!isNameFocused)}
           onBlur={() => setIsNameFocused(!isNameFocused)}
         />
+
         <Text style={formStyles.label}>Add people</Text>
         {addedUsers}
         <TextInput

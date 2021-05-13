@@ -10,10 +10,10 @@ import { getGroupMessages } from '../redux/actions/message-actions';
 import { useAppDispatch, useAppSelector } from '../redux/store/store';
 import { DrawerParamList } from './DrawerNavigator';
 
-type ShowGroupScreenRouteProp = RouteProp<DrawerParamList, 'Group'>;
+type ShowGroupScreenRouteProp = RouteProp<DrawerParamList, 'ShowGroup'>;
+const MESSAGE_LIMIT = 25;
 
 const ShowGroup = () => {
-  const [isInitialRender, setInitialRender] = useState(true);
   const route: ShowGroupScreenRouteProp = useRoute();
   const dispatch = useAppDispatch();
 
@@ -21,32 +21,19 @@ const ShowGroup = () => {
   const group = useAppSelector(state =>
     state.groups.groups.find(g => g.id === groupId),
   );
-  const { messages, name } = group!;
-  let scrollViewRef = useRef<ScrollView>(null);
+  const { messages, name, getMessagesFailed, isNoMoreMessages } = group!;
 
+  const [isLoadingMoreMessages, setIsLoadingMoreMessage] = useState(false);
   const getMessages = () => {
-    if (
-      group &&
-      !group.messages.getMessagesFailed &&
-      !group.messages.isNoMoreMessages
-    ) {
-      console.log('here', messages.messages[0]?.createdAt || '');
+    setIsLoadingMoreMessage(true);
+    if (group && getMessagesFailed && isNoMoreMessages) {
       dispatch(
         getGroupMessages({
           groupId,
-          lastCreatedAt: messages.messages[0]?.createdAt || '',
+          lastCreatedAt: messages[0]?.createdAt,
+          limit: MESSAGE_LIMIT,
         }),
       );
-    }
-  };
-
-  //Tomorrow: Prevent getMessages call from going too soon.
-  //Add scroll to end on message if at bottom already
-  //Add scrollTo for when old messages are loaded.
-
-  const scrollToEnd = () => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollToEnd({ animated: false });
     }
   };
 
@@ -57,23 +44,62 @@ const ShowGroup = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const _keyboardDidShow = () => {
-    setTimeout(scrollToEnd, 1); //Seems to take 1 second for some reason...
+    setTimeout(scrollToEnd, 1);
   };
 
+  let scrollViewRef = useRef<ScrollView>(null);
+  const scrollToEnd = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: false });
+    }
+  };
+
+  const [screenDetails, setScreenDetails] = useState({
+    yOffset: 0,
+    layoutHeight: 500,
+  });
+  const handleScroll = (e: { nativeEvent: NativeScrollEvent }) => {
+    setScreenDetails({
+      yOffset: e.nativeEvent.contentOffset.y,
+      layoutHeight: e.nativeEvent.layoutMeasurement.height,
+    });
+  };
+
+  const onBottom = (h: number): boolean => {
+    const { yOffset, layoutHeight } = screenDetails;
+    if (yOffset + layoutHeight > h - 100) {
+      return true;
+    }
+    return false;
+  };
+
+  const [isInitialRender, setInitialRender] = useState(true);
+  const [oldHeight, setOldHeight] = useState(0);
   const handleContentSizeChange = (w: number, h: number) => {
     if (isInitialRender) {
       scrollToEnd();
       setInitialRender(false);
+    } else {
+      if (onBottom(h)) {
+        scrollToEnd();
+      } else {
+        if (scrollViewRef.current && isLoadingMoreMessages) {
+          scrollViewRef.current.scrollTo({
+            animated: false,
+            y: screenDetails.yOffset + (h - oldHeight),
+          });
+          setIsLoadingMoreMessage(false);
+        } else {
+          // TODO: Set new messages button
+        }
+      }
     }
-    console.log(h);
+    setOldHeight(h);
   };
 
-  const handleScroll = (e: { nativeEvent: NativeScrollEvent }) => {
+  const onScrollNearTop = (e: { nativeEvent: NativeScrollEvent }) => {
     const yOffset = e.nativeEvent.contentOffset.y;
-    console.log(yOffset);
-    console.log(e.nativeEvent.contentSize.height);
-    console.log(e.nativeEvent.layoutMeasurement.height);
-    if (yOffset < 500) {
+    if (yOffset < 500 && !isLoadingMoreMessages) {
       getMessages();
     }
   };
@@ -81,17 +107,19 @@ const ShowGroup = () => {
   return (
     <View style={styles.container}>
       <ChatHeader name={name} />
-      {messages.getMessagesFailed ? (
-        messages.errors.map(e => <ErrorText error={e.message} />)
+      {getMessagesFailed ? (
+        <ErrorText error={'Failed to load messages.'} />
       ) : (
         <View style={styles.container}>
           <ScrollView
             style={styles.scrollView}
             ref={scrollViewRef}
             onContentSizeChange={handleContentSizeChange}
-            onScrollEndDrag={handleScroll}
-            onScrollBeginDrag={handleScroll}>
-            {messages.messages.map((m, index) => (
+            onScrollEndDrag={onScrollNearTop}
+            onScrollBeginDrag={onScrollNearTop}
+            onMomentumScrollEnd={onScrollNearTop}
+            onScroll={handleScroll}>
+            {messages.map((m, index) => (
               <ShowMessage key={index} {...m} />
             ))}
           </ScrollView>

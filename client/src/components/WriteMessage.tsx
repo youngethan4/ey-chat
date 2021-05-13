@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  NativeSyntheticEvent,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  TextInputKeyPressEventData,
+  View,
+} from 'react-native';
 import { newMessage } from '../redux/actions/message-actions';
 import { useAppDispatch, useAppSelector } from '../redux/store/store';
 import { pink, purple } from '../styles/colors';
@@ -19,9 +27,23 @@ const WriteMessage: React.FC<Props> = ({ groupId }) => {
   };
 
   const sendMessage = () => {
-    console.log('sending... ', groupId);
-    dispatch(newMessage({ groupId, payload: message, sender: username }));
+    const payload = message.trim();
+    if (payload.length > 0) {
+      dispatch(
+        newMessage({
+          groupId,
+          payload: message.trim(),
+          sender: username,
+        }),
+      );
+    }
     setMessage('');
+  };
+
+  const onEnter = (e: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
+    if (e.nativeEvent.key === 'Enter') {
+      sendMessage();
+    }
   };
 
   return (
@@ -29,10 +51,15 @@ const WriteMessage: React.FC<Props> = ({ groupId }) => {
       <TextInput
         style={[styles.textInput, isFocused && styles.textInputOnFocus]}
         multiline
+        maxLength={500}
         onChangeText={setMessage}
         onFocus={toggleFocus}
         onBlur={toggleFocus}
         value={message}
+        onKeyPress={onEnter}
+        returnKeyType={'send'}
+        blurOnSubmit={false}
+        keyboardType={'default'}
       />
       <Pressable style={styles.sendButton} onPress={sendMessage}>
         <Text style={styles.sendButtonText}>Send</Text>

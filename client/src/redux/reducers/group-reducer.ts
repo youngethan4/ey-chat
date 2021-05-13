@@ -14,19 +14,22 @@ export interface Message {
   status?: 'error' | 'sent' | 'delivered';
 }
 
-interface MessageState {
-  messages: Message[];
-  getMessagesFailed: boolean;
-  isNoMoreMessages: boolean;
-  errors: RequestError[];
-}
-
 export interface Group {
   id: string;
   name: string;
   participants?: { username: string }[];
-  messages: MessageState;
+  messages: Message[];
+  isNoMoreMessages: boolean;
+  getMessagesFailed: boolean;
 }
+
+const initialGroupState: Group = {
+  id: '',
+  name: '',
+  messages: [],
+  isNoMoreMessages: false,
+  getMessagesFailed: false,
+};
 
 interface GroupState {
   groups: Group[];
@@ -34,13 +37,6 @@ interface GroupState {
   newGroupError: boolean;
   indexParticipantsError: boolean;
 }
-
-const initialMessageState: MessageState = {
-  messages: [],
-  getMessagesFailed: false,
-  isNoMoreMessages: false,
-  errors: [],
-};
 
 const initialState: GroupState = {
   groups: [],
@@ -54,7 +50,7 @@ const groupReducer = createReducer(initialState, builder =>
     .addCase(newGroup.fulfilled, ({ groups }, { payload }) => {
       return {
         ...initialState,
-        groups: [...groups, { ...payload, messages: initialMessageState }],
+        groups: [...groups, { ...initialGroupState, ...payload }],
       };
     })
     .addCase(newGroup.rejected, (state, { payload }) => {
@@ -65,8 +61,8 @@ const groupReducer = createReducer(initialState, builder =>
     })
     .addCase(indexParticipants.fulfilled, (state, { payload }) => {
       const groups = payload.map(g => ({
+        ...initialGroupState,
         ...g,
-        messages: initialMessageState,
       }));
       return { ...initialState, groups };
     })
@@ -84,14 +80,9 @@ const groupReducer = createReducer(initialState, builder =>
     })
     .addCase(getGroupMessages.fulfilled, (state, { payload }) => {
       let group = state.groups.find(g => g.id === payload.groupId);
-      group!.messages.messages = [
-        ...payload.messages,
-        ...group!.messages.messages,
-      ];
-      group!.messages.getMessagesFailed = false;
-      if (payload.messages.length === 0) {
-        group!.messages.isNoMoreMessages = true;
-      }
+      group!.messages = [...payload.messages, ...group!.messages];
+      group!.getMessagesFailed = false;
+      group!.isNoMoreMessages = payload.isNoMoreMessages;
       state.groups.map(g => {
         if (g.id === payload.groupId && group) {
           return group;
@@ -103,7 +94,7 @@ const groupReducer = createReducer(initialState, builder =>
     .addCase(getGroupMessages.rejected, (state, { payload }) => {
       let group = state.groups.find(g => g.id === payload?.groupId);
       if (payload && group) {
-        group.messages.getMessagesFailed = true;
+        group.getMessagesFailed = true;
         state.groups.map(g => {
           if (g.id === payload.groupId && group) {
             return group;
@@ -116,7 +107,7 @@ const groupReducer = createReducer(initialState, builder =>
     })
     .addCase(newMessage.fulfilled, (state, { payload }) => {
       let group = state.groups.find(g => g.id === payload.groupId);
-      group!.messages.messages.push(payload);
+      group!.messages.push(payload);
       state.groups.map(g => {
         if (g.id === payload.groupId && group) {
           return group;
@@ -128,7 +119,7 @@ const groupReducer = createReducer(initialState, builder =>
     .addCase(newMessage.rejected, (state, { payload }) => {
       if (payload) {
         let group = state.groups.find(g => g.id === payload.groupId);
-        group!.messages.messages.push(payload);
+        group!.messages.push(payload);
         state.groups.map(g => {
           if (g.id === payload.groupId && group) {
             return group;

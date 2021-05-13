@@ -61,9 +61,11 @@ const styles = StyleSheet.create({
   },
   isSender: {
     backgroundColor: pink,
+    marginStart: 20,
   },
   notSender: {
     borderColor: purple,
+    marginEnd: 20,
     borderWidth: 1,
     backgroundColor: 'lightgray',
   },

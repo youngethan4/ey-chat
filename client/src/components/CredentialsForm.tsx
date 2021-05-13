@@ -4,6 +4,7 @@ import { Text, View, TextInput, Pressable } from 'react-native';
 import { useState } from 'react';
 import ErrorText from './ErrorText';
 import { formStyles } from '../styles/form';
+import { useStyledErrors } from '../hooks/styles';
 
 export type Props = {
   onSubmit: Function;
@@ -39,15 +40,7 @@ const CredentialsForm: React.FC<Props> = ({
   const usernameError = errors.find(e => e.field === 'username');
   const passwordError = errors.find(e => e.field === 'password');
 
-  const styledErrors = (
-    <View>
-      {errors
-        .filter(e => !e.field)
-        .map((e, key) => (
-          <ErrorText error={e.message} key={key} />
-        ))}
-    </View>
-  );
+  const styledErrors = useStyledErrors(errors);
 
   return (
     <View style={formStyles.container}>

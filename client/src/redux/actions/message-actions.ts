@@ -8,11 +8,13 @@ const MESSAGES_URL = 'http://10.0.2.2/api/messages';
 interface Returned {
   messages: Message[];
   groupId: string;
+  isNoMoreMessages: boolean;
 }
 
 interface GetGroupMessagesArgs {
   groupId: string;
-  lastCreatedAt: string;
+  lastCreatedAt?: string;
+  limit: number;
 }
 
 interface GetGroupMessagesThunkConfig extends RequestErrors {
@@ -24,13 +26,16 @@ export const getGroupMessages = createAsyncThunk<
   GetGroupMessagesArgs,
   { rejectValue: GetGroupMessagesThunkConfig }
 >('messages/index', async (query, thunkApi) => {
-  console.log('in getGroupMessages');
+  const { groupId, lastCreatedAt, limit } = query;
   try {
     const res = await axios.get(
-      `${MESSAGES_URL}/${query.groupId}?lastCreatedAt=${query.lastCreatedAt}`,
+      `${MESSAGES_URL}/${groupId}?lastCreatedAt=${
+        lastCreatedAt || ''
+      }&limit=${limit}`,
     );
     console.log(res.data);
-    return { messages: res.data, groupId: query.groupId };
+    const isNoMoreMessages = res.data.length < limit;
+    return { messages: res.data, groupId: query.groupId, isNoMoreMessages };
   } catch (err: any) {
     console.log(err);
     const res: RequestErrors = err.response.data;

@@ -14,7 +14,7 @@ import { StyleSheet } from 'react-native';
 
 export type DrawerParamList = {
   CreateGroup: undefined;
-  Group: { groupId: string };
+  ShowGroup: { groupId: string };
 };
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
