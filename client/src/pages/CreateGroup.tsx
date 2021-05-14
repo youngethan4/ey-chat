@@ -18,7 +18,7 @@ import { formStyles } from '../styles/form';
 
 const CreateGroup = () => {
   const dispatch = useAppDispatch();
-  const username = useAppSelector(state => state.auth.user!.username);
+  const username = useAppSelector(state => state.auth.user?.username);
   const { errors, newGroupError } = useAppSelector(state => state.groups);
   const [name, setName] = useState('');
   const [isNameFocused, setIsNameFocused] = useState(false);
@@ -27,7 +27,7 @@ const CreateGroup = () => {
   const [searchResult, setSearchResult] = useState([] as string[]);
 
   const onSubmit = () => {
-    dispatch(newGroup({ name, participants: [username, ...participants] }));
+    dispatch(newGroup({ name, participants: [username!, ...participants] }));
     setSearchResult([]);
     setParticipants([]);
     setName('');

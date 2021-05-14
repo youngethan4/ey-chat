@@ -26,7 +26,7 @@ const ShowGroup = () => {
   const [isLoadingMoreMessages, setIsLoadingMoreMessage] = useState(false);
   const getMessages = () => {
     setIsLoadingMoreMessage(true);
-    if (group && getMessagesFailed && isNoMoreMessages) {
+    if (group && !getMessagesFailed && !isNoMoreMessages) {
       dispatch(
         getGroupMessages({
           groupId,
@@ -112,6 +112,7 @@ const ShowGroup = () => {
       ) : (
         <View style={styles.container}>
           <ScrollView
+            invertStickyHeaders
             style={styles.scrollView}
             ref={scrollViewRef}
             onContentSizeChange={handleContentSizeChange}

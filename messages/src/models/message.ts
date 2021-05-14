@@ -64,7 +64,6 @@ messageSchema.statics.findNextMessages = async function (
     .match({ createdAt: { $lt: lastCreatedAt || new Date() } })
     .sort({ createdAt: -1 })
     .limit(limit || 50)
-    .sort({ createdAt: 1 })
     .project({
       id: '$_id',
       _id: 0,

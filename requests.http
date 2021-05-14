@@ -25,22 +25,22 @@ GET https://ey-chat.dev/api/users/currentuser
 #New Message
 POST https://ey-chat.dev/api/messages
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOWQ0MjQyMDFjZDY3MDAxOThlMDkzMCIsInVzZXJuYW1lIjoidGVzdCIsImlhdCI6MTYyMDkxODg1MH0.Z2c2mZhddTWzu7HkFRo3o6EkCy1vTXWAmWoO_aQnf1A
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOWU5NGJiMjUwYjkyMDAxYjZkODM4NiIsInVzZXJuYW1lIjoidGVzdCIsImlhdCI6MTYyMTAwNTQ5OX0.7laonxuyob4WjnaWiGaLDTPe8Yjc1Gn4RxhuSmNJPcc
 
 {
-  "groupId": "609d425f11b931001ae86e19",
+  "groupId": "609e95034bfa52001a5fd3e4",
   "sender": "test",
-  "payload": "How are you?"
+  "payload": "Hello"
 }
 
 ###
 #Create Group
 POST https://ey-chat.dev/api/groups
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOWQ0MjQyMDFjZDY3MDAxOThlMDkzMCIsInVzZXJuYW1lIjoidGVzdCIsImlhdCI6MTYyMDkxODg1MH0.Z2c2mZhddTWzu7HkFRo3o6EkCy1vTXWAmWoO_aQnf1A
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOWU5NGJiMjUwYjkyMDAxYjZkODM4NiIsInVzZXJuYW1lIjoidGVzdCIsImlhdCI6MTYyMTAwNTQ5OX0.7laonxuyob4WjnaWiGaLDTPe8Yjc1Gn4RxhuSmNJPcc
 
 {
-  "name": "group 1",
+  "name": "group 2",
   "users": ["hi","test"]
 }
 

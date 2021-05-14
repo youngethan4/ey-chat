@@ -33,11 +33,9 @@ export const getGroupMessages = createAsyncThunk<
         lastCreatedAt || ''
       }&limit=${limit}`,
     );
-    console.log(res.data);
     const isNoMoreMessages = res.data.length < limit;
     return { messages: res.data, groupId: query.groupId, isNoMoreMessages };
   } catch (err: any) {
-    console.log(err);
     const res: RequestErrors = err.response.data;
     return thunkApi.rejectWithValue({
       errors: res.errors,

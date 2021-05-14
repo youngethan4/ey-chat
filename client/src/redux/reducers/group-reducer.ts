@@ -80,7 +80,7 @@ const groupReducer = createReducer(initialState, builder =>
     })
     .addCase(getGroupMessages.fulfilled, (state, { payload }) => {
       let group = state.groups.find(g => g.id === payload.groupId);
-      group!.messages = [...payload.messages, ...group!.messages];
+      group!.messages = [...group!.messages, ...payload.messages];
       group!.getMessagesFailed = false;
       group!.isNoMoreMessages = payload.isNoMoreMessages;
       state.groups.map(g => {
@@ -107,7 +107,7 @@ const groupReducer = createReducer(initialState, builder =>
     })
     .addCase(newMessage.fulfilled, (state, { payload }) => {
       let group = state.groups.find(g => g.id === payload.groupId);
-      group!.messages.push(payload);
+      group!.messages.unshift(payload);
       state.groups.map(g => {
         if (g.id === payload.groupId && group) {
           return group;
@@ -119,7 +119,7 @@ const groupReducer = createReducer(initialState, builder =>
     .addCase(newMessage.rejected, (state, { payload }) => {
       if (payload) {
         let group = state.groups.find(g => g.id === payload.groupId);
-        group!.messages.push(payload);
+        group!.messages.unshift(payload);
         state.groups.map(g => {
           if (g.id === payload.groupId && group) {
             return group;
