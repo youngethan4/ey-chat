@@ -34,5 +34,5 @@ it('responds with cookie', async () => {
     .send({ username: 'test', password: 'pass' })
     .expect(200);
 
-  expect(res.get('Set-Cookie')).toBeDefined();
+  expect(res.body.accessToken).toBeDefined();
 });

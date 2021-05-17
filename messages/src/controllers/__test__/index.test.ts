@@ -26,7 +26,7 @@ it("Responds with a group's list of messages", async () => {
 
   const { body: messages } = await request(app)
     .get(`/api/messages/${groupId}`)
-    .set('Cookie', global.signup())
+    .set('Authorization', global.signup())
     .send()
     .expect(200);
 
@@ -49,7 +49,7 @@ it('Responds with correct messages', async () => {
 
   const { body: messages1 } = await request(app)
     .get(`/api/messages/${groupId}?limit=${3}`)
-    .set('Cookie', global.signup())
+    .set('Authorization', global.signup())
     .send()
     .expect(200);
 
@@ -58,13 +58,13 @@ it('Responds with correct messages', async () => {
   const { body: messages2 } = await request(app)
     .get(
       `/api/messages/${groupId}?limit=${3}&lastCreatedAt=${
-        messages1[0].createdAt
+        messages1[messages1.length - 1].createdAt
       }`
     )
-    .set('Cookie', global.signup())
+    .set('Authorization', global.signup())
     .send()
     .expect(200);
 
   expect(messages2).toHaveLength(3);
-  expect(messages2[0].payload).toEqual('1');
+  expect(messages2[messages2.length - 1].payload).toEqual('1');
 });

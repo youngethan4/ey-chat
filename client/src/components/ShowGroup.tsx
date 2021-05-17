@@ -8,9 +8,6 @@ import {
   Text,
   View,
 } from 'react-native';
-import ChatHeader from '../components/ChatHeader';
-import ErrorText from '../components/ErrorText';
-import WriteMessage from '../components/WriteMessage';
 import {
   dayToString,
   getPeriod,
@@ -21,21 +18,21 @@ import { getGroupMessages } from '../redux/actions/message-actions';
 import { Message } from '../redux/reducers/group-reducer';
 import { useAppDispatch, useAppSelector } from '../redux/store/store';
 import { pink, purple } from '../styles/colors';
-import { DrawerParamList } from './DrawerNavigator';
+import { DrawerParamList } from '../screens/DrawerNavigator';
 
 type ShowGroupScreenRouteProp = RouteProp<DrawerParamList, 'ShowGroupScreen'>;
 const MESSAGE_LIMIT = 25;
 
-const ShowGroupTest = () => {
+const ShowGroup = () => {
   const route: ShowGroupScreenRouteProp = useRoute();
   const dispatch = useAppDispatch();
 
-  const username = useAppSelector(state => state.auth.user!.username);
+  const username = useAppSelector(state => state.auth.user?.username);
   const groupId = route.params.groupId;
   const group = useAppSelector(state =>
     state.groups.groups.find(g => g.id === groupId),
   );
-  const { messages, name, getMessagesFailed, isNoMoreMessages } = group!;
+  const { messages, getMessagesFailed, isNoMoreMessages } = group!;
 
   const getMessages = () => {
     console.log(messages[messages.length - 1]);
@@ -56,7 +53,7 @@ const ShowGroupTest = () => {
   }, []);
 
   const [showDate, setShowDate] = useState({ index: 0, shouldShow: false });
-  const ShowMessageTest: ListRenderItem<Message> = ({ item, index }) => {
+  const ShowMessage: ListRenderItem<Message> = ({ item, index }) => {
     const { createdAt, payload, sender } = item;
     const date = new Date(createdAt);
     const dateString = `${to12hrFormat(
@@ -97,28 +94,15 @@ const ShowGroupTest = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <ChatHeader name={name} />
-      {getMessagesFailed ? (
-        <ErrorText error={'Failed to load messages.'} />
-      ) : (
-        <View style={styles.container}>
-          <FlatList
-            style={styles.container}
-            data={messages}
-            extraData={[username, showDate]}
-            renderItem={ShowMessageTest}
-            keyExtractor={(item, index) => index.toString()}
-            onEndReachedThreshold={2}
-            onEndReached={getMessages}
-            inverted
-          />
-          <View>
-            <WriteMessage groupId={groupId} />
-          </View>
-        </View>
-      )}
-    </View>
+    <FlatList
+      style={styles.container}
+      data={messages}
+      extraData={[username, showDate]}
+      renderItem={ShowMessage}
+      keyExtractor={item => item.id}
+      onEndReached={getMessages}
+      inverted
+    />
   );
 };
 
@@ -156,4 +140,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ShowGroupTest;
+export default ShowGroup;

@@ -1,4 +1,4 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { Message } from '../reducers/group-reducer';
 import { RequestError, RequestErrors } from './request-errors';
@@ -69,3 +69,5 @@ export const newMessage = createAsyncThunk<
     });
   }
 });
+
+export const socketMessage = createAction<Message>('socketMessage');

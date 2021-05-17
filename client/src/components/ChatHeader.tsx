@@ -2,7 +2,7 @@ import React from 'react';
 import { Pressable, Text, View, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
-import { DrawerParamList } from '../pages/DrawerNavigator';
+import { DrawerParamList } from '../screens/DrawerNavigator';
 
 export type Props = {
   name: string;

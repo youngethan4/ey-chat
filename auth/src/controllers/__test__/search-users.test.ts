@@ -13,15 +13,14 @@ it('gets a list of qualifying users', async () => {
   await createUser('erica');
   await createUser('erik');
   await createUser('someoneri');
-  const cookie = await global.signup();
+  const token = await global.signup();
 
   const { body: users } = await request(app)
     .get('/api/users?user=eri')
-    .set('Cookie', cookie)
+    .set('Authorization', token)
     .send()
     .expect(200);
 
-  console.log(users);
   expect(users).toHaveLength(3);
 });
 
@@ -29,14 +28,13 @@ it('Currentuser is not in list', async () => {
   await createUser('tester');
   await createUser('testing');
   await createUser('tes');
-  const cookie = await global.signup();
+  const token = await global.signup();
 
   const { body: users } = await request(app)
     .get('/api/users?user=tes')
-    .set('Cookie', cookie)
+    .set('Authorization', token)
     .send()
     .expect(200);
 
-  console.log(users);
   expect(users).toHaveLength(3);
 });

@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { indexParticipants, newGroup } from '../actions/group-actions';
-import { newMessage } from '../actions/message-actions';
+import { newMessage, socketMessage } from '../actions/message-actions';
 import { getGroupMessages } from '../actions/message-actions';
 import { RequestError } from '../actions/request-errors';
 
@@ -128,6 +128,17 @@ const groupReducer = createReducer(initialState, builder =>
         });
         return state;
       }
+      return state;
+    })
+    .addCase(socketMessage, (state, { payload }) => {
+      let group = state.groups.find(g => g.id === payload.groupId);
+      group!.messages.unshift(payload);
+      state.groups.map(g => {
+        if (g.id === payload.groupId && group) {
+          return group;
+        }
+        return g;
+      });
       return state;
     })
     .addDefaultCase(state => state),

@@ -31,7 +31,7 @@ const SigninPage = () => {
     <View>
       <Text style={styles.title}>Welcome back!</Text>
       <Pressable onPress={() => navigation.navigate('Signup')}>
-        <Text style={styles.link}>New User?</Text>
+        <Text style={styles.link}>No account?</Text>
       </Pressable>
       <View style={styles.container}>
         <CredentailsForm

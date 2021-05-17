@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="design_navigation_padding_top_default" >5dp</dimen>
+  <dimen name="design_navigation_separator_vertical_padding" >0dp</dimen>
+  <dimen name="design_navigation_padding_bottom">5dp</dimen>
+  <dimen name="design_navigation_icon_size" >20dp</dimen>
+  <dimen name="design_navigation_icon_padding" >12dp</dimen>
+</resources>

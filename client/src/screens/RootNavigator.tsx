@@ -2,8 +2,8 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useAppSelector } from '../redux/store/store';
-import SignupPage from './SignupPage';
-import SigninPage from './SigninPage';
+import SignupPage from './SignupScreen';
+import SigninPage from './SigninScreen';
 import DrawerNavigation from './DrawerNavigator';
 
 export type RootStackParamList = {

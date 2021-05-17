@@ -5,14 +5,14 @@ import {
   DrawerContentScrollView,
   DrawerItem,
 } from '@react-navigation/drawer';
-import ShowGroupTest from './ShowGroupTest';
+import ShowGroupTest from './ShowGroupScreen';
 import CreateGroup from './CreateGroup';
 import { useAppDispatch, useAppSelector } from '../redux/store/store';
 import { Group } from '../redux/reducers/group-reducer';
 import { indexParticipants } from '../redux/actions/group-actions';
-import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import { pink, purple } from '../styles/colors';
-import { signout } from '../redux/actions/auth-actions';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { purple } from '../styles/colors';
+import SettingsModal from '../components/SettingsModal';
 
 export type DrawerParamList = {
   CreateGroupScreen: undefined;
@@ -29,41 +29,26 @@ const DrawerNavigation = () => {
     dispatch(indexParticipants());
   }, [dispatch]);
 
-  //Use kafka consumer to update drawer badges.
-  //Once group is selected, register socket.io-client
+  // const groupSocket = useGroupSocket();
+  // groupSocket(groups.map(g => g.id));
 
-  //Create a header within drawer with settings and createGroup button
   const [modalVisible, setModalVisible] = useState(false);
   const customDrawerContent = (props: DrawerContentComponentProps) => {
     return (
       <DrawerContentScrollView {...props}>
-        <Modal
-          animationType="fade"
-          transparent
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}>
-          <View style={styles.modalView}>
-            <View style={styles.modalSubView}>
-              <Pressable onPress={async () => await dispatch(signout())}>
-                <Text style={styles.modalButton}>Sign Out</Text>
-              </Pressable>
-              <Pressable onPress={() => setModalVisible(false)}>
-                <Text style={[styles.modalButton, styles.closeButton]}>
-                  Close
-                </Text>
-              </Pressable>
-            </View>
-          </View>
-        </Modal>
+        <SettingsModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+        />
         <View style={[styles.drawerItem, styles.headerItem]}>
-          <DrawerItem
-            style={styles.createGroup}
-            label="Create Group"
-            labelStyle={[styles.drawerLabel, styles.headerLabel]}
-            onPress={() => props.navigation.navigate('CreateGroupScreen')}
-          />
+          <Pressable
+            onPress={() => props.navigation.navigate('CreateGroupScreen')}>
+            <Text style={[styles.headerButton, styles.createGroupButton]}>
+              Create Group
+            </Text>
+          </Pressable>
           <Pressable onPress={() => setModalVisible(true)}>
-            <Text style={styles.settingsButton}>%</Text>
+            <Text style={[styles.headerButton, styles.settingsButton]}>%</Text>
           </Pressable>
         </View>
         {groups.map((g: Group, key) => (
@@ -111,6 +96,7 @@ const styles = StyleSheet.create({
   drawerLabel: {
     fontSize: 20,
     padding: 0,
+    alignSelf: 'flex-start',
     margin: 0,
   },
   drawerItem: {
@@ -122,60 +108,24 @@ const styles = StyleSheet.create({
   headerItem: {
     display: 'flex',
     flexDirection: 'row',
+    paddingBottom: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  headerLabel: {
-    flex: 1,
-    alignSelf: 'center',
-  },
-  createGroup: {
+  createGroupButton: {
     borderWidth: 2,
     borderColor: purple,
-    borderRadius: 20,
-    flex: 1,
-    alignSelf: 'flex-start',
-    padding: 0,
-    margin: 0,
-    marginStart: 20,
   },
   settingsButton: {
     color: purple,
     backgroundColor: 'lightgray',
+  },
+  headerButton: {
     borderRadius: 25,
-    flex: 1,
     fontSize: 25,
-    padding: 10,
-    paddingHorizontal: 17,
-    margin: 5,
-    marginEnd: 20,
-  },
-  modalView: {
-    flex: 1,
-    margin: 0,
-    padding: 0,
-    backgroundColor: 'rgba(0,0,0,.4)',
-  },
-  modalSubView: {
-    alignItems: 'center',
-    borderRadius: 25,
-    borderWidth: 1,
-    borderColor: 'lightgray',
-    padding: 25,
-    paddingHorizontal: 50,
-    margin: 100,
-    backgroundColor: 'white',
-  },
-  modalButton: {
-    borderWidth: 2,
-    borderColor: purple,
-    borderRadius: 10,
     padding: 5,
-    paddingHorizontal: 10,
+    paddingHorizontal: 12,
     margin: 5,
-    fontSize: 18,
-  },
-  closeButton: {
-    borderColor: pink,
-    color: 'black',
   },
 });
 

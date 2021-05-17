@@ -1,10 +1,10 @@
-import app from "../app";
-import request from "supertest";
+import app from '../app';
+import request from 'supertest';
 
-it("Responds with not found error", async () => {
+it('Responds with not found error', async () => {
   await request(app)
-    .get("/notaroute/error")
-    .set("Cookie", global.signup())
+    .get('/notaroute/error')
+    .set('Authorization', global.signup())
     .send()
     .expect(404);
 });

@@ -1,13 +1,13 @@
 import client from 'socket.io-client';
-import { getData } from '../async-storage/storage';
 
-class MessagesClient {
+class GroupSocketClient {
   private url = 'http://localhost/sockets/groups';
   private clientSocket: SocketIOClient.Socket | null = null;
 
-  connect = async (): Promise<void> => {
+  connect = async (token: string): Promise<void> => {
+    console.log('Connecting to client...');
     this.clientSocket = client.connect(this.url, {
-      auth: { token: await getData('token') },
+      auth: { token },
     });
 
     return new Promise((resolve, reject) => {
@@ -43,4 +43,4 @@ class MessagesClient {
   };
 }
 
-export const messagesClient = new MessagesClient();
+export const groupSocketClient = new GroupSocketClient();

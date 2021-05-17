@@ -28,7 +28,7 @@ const SignupPage = () => {
     <View>
       <Text style={styles.title}>Sign up with ey-chat</Text>
       <Pressable onPress={() => navigation.navigate('Signin')}>
-        <Text style={styles.link}>Existing User?</Text>
+        <Text style={styles.link}>Already have an account?</Text>
       </Pressable>
       <View style={styles.container}>
         <CredentailsFrom

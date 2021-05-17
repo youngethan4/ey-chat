@@ -6,7 +6,6 @@ import { RequestErrors } from './request-errors';
 
 const SIGNIN_URL = 'http://10.0.2.2/api/users/signin';
 const SIGNUP_URL = 'http://10.0.2.2/api/users/signup';
-const SIGNOUT_URL = 'http://10.0.2.2/api/users/signout';
 const CURRENT_USER_URL = 'http://10.0.2.2/api/users/currentuser';
 
 const TOKEN_KEY = 'token';
@@ -69,7 +68,6 @@ export const currentUser = createAsyncThunk('users/currentuser', async () => {
 
 export const signout = createAsyncThunk('users/signout', async () => {
   await removeData(TOKEN_KEY);
-  await axios.post(SIGNOUT_URL);
   return;
 });
 

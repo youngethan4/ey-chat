@@ -6,7 +6,7 @@ import { app } from '../app';
 declare global {
   namespace NodeJS {
     interface Global {
-      signup(): Promise<string[]>;
+      signup(): Promise<string>;
     }
   }
 }
@@ -45,6 +45,6 @@ global.signup = async () => {
     .send({ username, password })
     .expect(201);
 
-  const cookie = res.get('Set-Cookie');
-  return cookie;
+  const token = res.body.accessToken;
+  return `Bearer ${token}`;
 };

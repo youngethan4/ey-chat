@@ -3,7 +3,6 @@ import express from 'express';
 import { body } from 'express-validator';
 import { signupController } from '../controllers/signup';
 import { signinController } from '../controllers/signin';
-import { signoutController } from '../controllers/signout';
 import { currentUserController } from '../controllers/current-user';
 import { searchUsersController } from '../controllers/search-users';
 
@@ -34,8 +33,6 @@ router.post(
   validateRequest,
   signinController
 );
-
-router.post('/api/users/signout', signoutController);
 
 router.get('/api/users/currentuser', currentUser, currentUserController);
 

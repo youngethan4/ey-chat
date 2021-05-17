@@ -8,7 +8,7 @@ it('Responds with a 400 error', async () => {
   const id = mongoose.Types.ObjectId().toHexString();
   await request(app)
     .delete(`/api/groups/${id}`)
-    .set('Cookie', global.signup())
+    .set('Authorization', global.signup())
     .send()
     .expect(400);
 });
@@ -22,7 +22,7 @@ it('Deletes the group and all participants', async () => {
 
   await request(app)
     .delete(`/api/groups/${group.id}`)
-    .set('Cookie', global.signup())
+    .set('Authorization', global.signup())
     .send()
     .expect(204);
 

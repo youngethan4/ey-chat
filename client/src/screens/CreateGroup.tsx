@@ -79,12 +79,12 @@ const CreateGroup = () => {
         </Pressable>
         <View style={formStyles.error}>{newGroupError && styledErrors}</View>
 
+        <Text style={formStyles.label}>Group name</Text>
         <View style={formStyles.fieldError}>
           {groupNameError && newGroupError && (
             <ErrorText error={groupNameError.message} />
           )}
         </View>
-        <Text style={formStyles.label}>Group name</Text>
         <TextInput
           style={[
             formStyles.textInput,
