@@ -25,10 +25,10 @@ GET https://ey-chat.dev/api/users/currentuser
 #New Message
 POST https://ey-chat.dev/api/messages
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOWU5NGJiMjUwYjkyMDAxYjZkODM4NiIsInVzZXJuYW1lIjoidGVzdCIsImlhdCI6MTYyMTAwNTQ5OX0.7laonxuyob4WjnaWiGaLDTPe8Yjc1Gn4RxhuSmNJPcc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwYTdkYmJlN2Q1NDM5MDAxOTE0YjcwNyIsInVzZXJuYW1lIjoidGVzdCIsImlhdCI6MTYyMTYxMzUwMn0._SXbmxYWaPt747Xdkf4h2IKXGvM74_048QGmJfq6u74
 
 {
-  "groupId": "609e95034bfa52001a5fd3e4",
+  "groupId": "60a7dbd96f76160019b5a70d",
   "sender": "test",
   "payload": "Hello"
 }
@@ -37,10 +37,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOWU5NGJiM
 #Create Group
 POST https://ey-chat.dev/api/groups
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOWU5NGJiMjUwYjkyMDAxYjZkODM4NiIsInVzZXJuYW1lIjoidGVzdCIsImlhdCI6MTYyMTAwNTQ5OX0.7laonxuyob4WjnaWiGaLDTPe8Yjc1Gn4RxhuSmNJPcc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwYTdkYmJlN2Q1NDM5MDAxOTE0YjcwNyIsInVzZXJuYW1lIjoidGVzdCIsImlhdCI6MTYyMTYxMzUwMn0._SXbmxYWaPt747Xdkf4h2IKXGvM74_048QGmJfq6u74
 
 {
-  "name": "group 2",
+  "name": "group 1",
   "users": ["hi","test"]
 }
 

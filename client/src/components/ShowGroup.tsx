@@ -1,8 +1,9 @@
 import { RouteProp, useRoute } from '@react-navigation/core';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   FlatList,
   ListRenderItem,
+  NativeScrollEvent,
   Pressable,
   StyleSheet,
   Text,
@@ -26,6 +27,7 @@ const MESSAGE_LIMIT = 25;
 const ShowGroup = () => {
   const route: ShowGroupScreenRouteProp = useRoute();
   const dispatch = useAppDispatch();
+  let flatListRef = useRef<FlatList>(null);
 
   const username = useAppSelector(state => state.auth.user?.username);
   const groupId = route.params.groupId;
@@ -35,7 +37,6 @@ const ShowGroup = () => {
   const { messages, getMessagesFailed, isNoMoreMessages } = group!;
 
   const getMessages = () => {
-    console.log(messages[messages.length - 1]);
     if (group && !getMessagesFailed && !isNoMoreMessages) {
       dispatch(
         getGroupMessages({
@@ -51,6 +52,38 @@ const ShowGroup = () => {
     getMessages();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const [screenDetails, setScreenDetails] = useState({
+    yOffset: 0,
+    layoutHeight: 500,
+  });
+  const handleScroll = (e: { nativeEvent: NativeScrollEvent }) => {
+    setScreenDetails({
+      yOffset: e.nativeEvent.contentOffset.y,
+      layoutHeight: e.nativeEvent.layoutMeasurement.height,
+    });
+  };
+
+  const onBottom = (h: number): boolean => {
+    const { yOffset, layoutHeight } = screenDetails;
+    if (yOffset + layoutHeight > h - 100) {
+      return true;
+    }
+    return false;
+  };
+
+  const [oldHeight, setOldHeight] = useState(0);
+  const handleContentSizeChange = (w: number, h: number) => {
+    if (!onBottom(h)) {
+      if (flatListRef.current) {
+        flatListRef.current.scrollToOffset({
+          animated: false,
+          offset: screenDetails.yOffset + (h - oldHeight),
+        });
+      }
+    }
+    setOldHeight(h);
+  };
 
   const [showDate, setShowDate] = useState({ index: 0, shouldShow: false });
   const ShowMessage: ListRenderItem<Message> = ({ item, index }) => {
@@ -95,12 +128,16 @@ const ShowGroup = () => {
 
   return (
     <FlatList
+      ref={flatListRef}
       style={styles.container}
       data={messages}
       extraData={[username, showDate]}
       renderItem={ShowMessage}
-      keyExtractor={item => item.id}
+      keyExtractor={(item, key) => key.toString()}
       onEndReached={getMessages}
+      onScroll={handleScroll}
+      onContentSizeChange={handleContentSizeChange}
+      bouncesZoom
       inverted
     />
   );

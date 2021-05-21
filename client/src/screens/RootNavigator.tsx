@@ -16,7 +16,6 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
   const isSignedin = useAppSelector(state => state.auth.isSignedin);
-  console.log(isSignedin);
 
   const currentPages = isSignedin ? (
     <>

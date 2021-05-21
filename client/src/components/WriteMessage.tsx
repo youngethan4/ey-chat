@@ -20,7 +20,7 @@ const WriteMessage: React.FC<Props> = ({ groupId }) => {
   const [message, setMessage] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const dispatch = useAppDispatch();
-  const username = useAppSelector(state => state.auth.user!.username);
+  const username = useAppSelector(state => state.auth.user?.username);
 
   const toggleFocus = () => {
     setIsFocused(!isFocused);
@@ -33,7 +33,7 @@ const WriteMessage: React.FC<Props> = ({ groupId }) => {
         newMessage({
           groupId,
           payload: message.trim(),
-          sender: username,
+          sender: username!,
         }),
       );
     }

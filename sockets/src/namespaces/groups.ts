@@ -16,9 +16,9 @@ class GroupNsp implements BaseNsp {
     this._nsp.use(authenticateSocket);
     this.nsp.on('connection', (socket: Socket) => {
       console.log('connecting to nsp groups: ', socket.id);
-      socket.on('join', (groups: string, cb) => {
+      socket.on('join', (groups: string[], cb) => {
         console.log('joining groups rooms');
-        JSON.parse(groups).forEach((g: { id: string }) => socket.join(g.id));
+        groups.forEach((g) => socket.join(g));
         cb();
       });
     });

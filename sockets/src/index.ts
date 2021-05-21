@@ -1,6 +1,7 @@
 import { MessageCreatedConsumer } from './events/consumers/message-created-consumer';
 import io from './app';
 import { kafkaWrapper } from './kafka-wrapper';
+const port = 3000;
 
 (async () => {
   if (!process.env.JWT_KEY) throw new Error('Must provide jwt key in env vars');
@@ -11,5 +12,7 @@ import { kafkaWrapper } from './kafka-wrapper';
 
   await new MessageCreatedConsumer(kafkaWrapper.client).listen();
 
-  io.listen(3000);
+  io.listen(port, () => {
+    console.log('listening on port', port);
+  });
 })();

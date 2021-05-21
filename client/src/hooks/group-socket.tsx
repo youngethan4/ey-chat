@@ -11,10 +11,17 @@ export const useGroupSocket = () => {
     .catch(error => console.error('Error connecting to group socket', error));
 
   groupSocketClient.onMessage((msg: string) => {
+    console.log('Message revieved');
     dispatch(socketMessage(JSON.parse(msg) as Message));
   });
 
-  return (groupIds: string[]) => {
+  const joinRooms = (groupIds: string[]) => {
     groupIds.forEach(g => groupSocketClient.joinRoom(g));
   };
+
+  const disconnect = () => {
+    groupSocketClient.disconnect();
+  };
+
+  return { joinRooms, disconnect };
 };

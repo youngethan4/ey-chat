@@ -44,7 +44,6 @@ export const signin = createAsyncThunk<
   try {
     const res = await axios.post(SIGNIN_URL, credentials);
     const ret: Returned = res.data;
-    console.log(ret);
     await storeData(TOKEN_KEY, ret.accessToken);
     setAxiosAuthHeader(ret.accessToken);
     return ret;

@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { groupSocketClient } from '../../socket-io/group-socket-client';
 import { Group } from '../reducers/group-reducer';
 import { RequestError, RequestErrors } from './request-errors';
 
@@ -18,7 +19,9 @@ export const newGroup = createAsyncThunk<
 >('groups/new', async (group, thunkApi) => {
   try {
     const res = await axios.post(NEW_GROUP_URL, group);
-    return res.data;
+    const createdGroup: Group = res.data;
+    groupSocketClient.joinRoom([createdGroup.id]);
+    return createdGroup;
   } catch (err: any) {
     const res: RequestErrors = err.response.data;
     return thunkApi.rejectWithValue(res.errors);
@@ -32,7 +35,9 @@ export const indexParticipants = createAsyncThunk<
 >('participants/groups/index', async (n, thunkApi) => {
   try {
     const res = await axios.get(INDEX_PARTICIPANT_URL);
-    return res.data;
+    const groups: Group[] = res.data;
+    groupSocketClient.joinRoom(groups.map(g => g.id));
+    return groups;
   } catch (err: any) {
     const res: RequestErrors = err.response.data;
     return thunkApi.rejectWithValue(res.errors);

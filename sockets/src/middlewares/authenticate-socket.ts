@@ -6,12 +6,16 @@ export const authenticateSocket = (
   socket: ExtendedSocket,
   next: (err?: ExtendedError | undefined) => any
 ) => {
+  console.log('in auth');
   const { token } = socket.handshake.auth;
+  console.log(token);
   try {
     const payload = jwt.verify(token, process.env.JWT_KEY!) as UserPayload;
+    console.log(payload);
     socket.data.currentUser = payload;
   } catch (err) {
-    next(new Error('unauthorized'));
+    console.log(err);
+    return next(new Error('unauthorized'));
   }
   next();
 };

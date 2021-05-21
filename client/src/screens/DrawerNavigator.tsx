@@ -8,11 +8,13 @@ import {
 import ShowGroupTest from './ShowGroupScreen';
 import CreateGroup from './CreateGroup';
 import { useAppDispatch, useAppSelector } from '../redux/store/store';
-import { Group } from '../redux/reducers/group-reducer';
+import { Group, Message } from '../redux/reducers/group-reducer';
 import { indexParticipants } from '../redux/actions/group-actions';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { purple } from '../styles/colors';
 import SettingsModal from '../components/SettingsModal';
+import { groupSocketClient } from '../socket-io/group-socket-client';
+import { socketMessage } from '../redux/actions/message-actions';
 
 export type DrawerParamList = {
   CreateGroupScreen: undefined;
@@ -23,14 +25,23 @@ const Drawer = createDrawerNavigator<DrawerParamList>();
 
 const DrawerNavigation = () => {
   const { groups } = useAppSelector(state => state.groups);
+  const { accessToken } = useAppSelector(state => state.auth);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(indexParticipants());
-  }, [dispatch]);
-
-  // const groupSocket = useGroupSocket();
-  // groupSocket(groups.map(g => g.id));
+    const connect = async () => {
+      await groupSocketClient.connect(accessToken || '');
+      groupSocketClient.onMessage((msg: Message) => {
+        console.log('msg recieved');
+        dispatch(socketMessage(msg));
+      });
+      dispatch(indexParticipants());
+    };
+    connect();
+    return () => {
+      groupSocketClient.disconnect();
+    };
+  }, [accessToken, dispatch]);
 
   const [modalVisible, setModalVisible] = useState(false);
   const customDrawerContent = (props: DrawerContentComponentProps) => {
